@@ -19,7 +19,7 @@ describe('ServiceDependencyResolver', () => {
       storage,
     ]);
 
-    expect(startupOrder.map((s) => s.name)).toEqual(['eventbus', 'storage', 'filesystem']);
+    expect(startupOrder.map((s: any) => s.name)).toEqual(['eventbus', 'storage', 'filesystem']);
   });
 
   it('correctly resolves complex diamond DAG with multiple dependencies', () => {
@@ -44,7 +44,7 @@ describe('ServiceDependencyResolver', () => {
       eventBus,
     ]);
 
-    const names = startupOrder.map((s) => s.name);
+    const names = startupOrder.map((s: any) => s.name);
 
     expect(names.indexOf('eventbus')).toBeLessThan(names.indexOf('storage'));
     expect(names.indexOf('eventbus')).toBeLessThan(names.indexOf('auth'));
@@ -64,7 +64,7 @@ describe('ServiceDependencyResolver', () => {
       storage,
     ]);
 
-    expect(shutdownOrder.map((s) => s.name)).toEqual(['filesystem', 'storage', 'eventbus']);
+    expect(shutdownOrder.map((s: any) => s.name)).toEqual(['filesystem', 'storage', 'eventbus']);
   });
 
   it('throws MissingDependencyError when a required dependency is missing', () => {
@@ -90,7 +90,7 @@ describe('ServiceDependencyResolver', () => {
 
     // 'telemetry' is missing, but optional, so it should not throw
     const startupOrder = ServiceDependencyResolver.resolveStartupOrder([storage]);
-    expect(startupOrder.map((s) => s.name)).toEqual(['storage']);
+    expect(startupOrder.map((s: any) => s.name)).toEqual(['storage']);
   });
 
   it('orders optional dependencies before dependents when optional service is registered', () => {
@@ -98,7 +98,7 @@ describe('ServiceDependencyResolver', () => {
     const storage = new MockService('storage', [], ['telemetry']);
 
     const startupOrder = ServiceDependencyResolver.resolveStartupOrder([storage, telemetry]);
-    expect(startupOrder.map((s) => s.name)).toEqual(['telemetry', 'storage']);
+    expect(startupOrder.map((s: any) => s.name)).toEqual(['telemetry', 'storage']);
   });
 
   it('detects direct circular dependency (A -> B -> A)', () => {
