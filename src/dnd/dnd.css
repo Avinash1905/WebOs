@@ -1,0 +1,35 @@
+.os-drag-preview-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: var(--os-z-dnd-preview, 1500);
+  margin-left: 12px;
+  margin-top: 12px;
+}
+
+.os-drag-preview-badge {
+  background: var(--os-surface-glass);
+  backdrop-filter: blur(var(--os-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--os-blur-heavy));
+  border: 1px solid var(--os-color-brand);
+  border-radius: var(--os-radius-md, 10px);
+  padding: 6px 12px;
+  color: var(--os-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: var(--os-shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: os-drag-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes os-drag-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
+  }
+}

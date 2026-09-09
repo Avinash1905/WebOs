@@ -1,0 +1,43 @@
+.os-error-boundary-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--os-radius-md, 12px);
+  color: var(--os-text-primary);
+  text-align: center;
+  gap: 12px;
+  margin: 12px;
+}
+
+.os-error-boundary-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--os-color-danger, #ef4444);
+}
+
+.os-error-boundary-msg {
+  font-size: 12px;
+  color: var(--os-text-secondary);
+  max-width: 400px;
+  line-height: 1.4;
+}
+
+.os-error-retry-btn {
+  padding: 6px 14px;
+  border-radius: var(--os-radius-sm);
+  background: var(--os-color-brand, #3b82f6);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.os-error-retry-btn:hover {
+  opacity: 0.9;
+}

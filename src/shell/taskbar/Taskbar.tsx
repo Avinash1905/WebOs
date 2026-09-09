@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Rocket } from 'lucide-react';
 import { StartButton } from './StartButton';
 import { TaskbarAppArea } from './TaskbarAppArea';
 import { SystemTray } from './SystemTray';
 import { Tooltip } from '../../ui/Tooltip/Tooltip';
-import { useUIStore } from '../../stores/uiStore';
+import { useTaskbarCustomStore } from '../../stores/taskbarCustomStore';
 import { useLauncherStore } from '../../stores/launcherStore';
 import type { DesktopIconItem } from '../../types/desktop';
 import './taskbar.css';
@@ -16,15 +16,27 @@ export interface TaskbarProps {
 }
 
 export const Taskbar: React.FC<TaskbarProps> = ({ onOpenApp, className }) => {
-  const { dockPosition } = useUIStore();
+  const { position, alignment, autoHide } = useTaskbarCustomStore();
   const { toggleLauncher, isOpen: isLauncherOpen } = useLauncherStore();
+  const [isHovered, setIsHovered] = useState(false);
+
+  const isHidden = autoHide && !isHovered;
 
   return (
     <footer
-      className={clsx('os-taskbar', `os-taskbar--${dockPosition}`, className)}
+      className={clsx(
+        'os-taskbar',
+        `os-taskbar--${position}`,
+        `os-taskbar-align--${alignment}`,
+        autoHide && 'os-taskbar--autohide',
+        isHidden && 'os-taskbar--hidden',
+        className
+      )}
       role="banner"
       aria-label="WebOS Taskbar"
       data-testid="taskbar"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="os-taskbar__left">
         <StartButton />
@@ -46,7 +58,12 @@ export const Taskbar: React.FC<TaskbarProps> = ({ onOpenApp, className }) => {
         </Tooltip>
       </div>
 
-      <div className="os-taskbar__center">
+      <div
+        className="os-taskbar__center"
+        style={{
+          justifyContent: alignment === 'left' ? 'flex-start' : 'center',
+        }}
+      >
         <TaskbarAppArea onOpenApp={onOpenApp} />
       </div>
 

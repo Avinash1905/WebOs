@@ -7,6 +7,7 @@ import {
   Palette,
   Eye,
   ArrowUpDown,
+  Grid,
 } from 'lucide-react';
 import type { DesktopIconItem } from '../../types/desktop';
 import type { ContextMenuItemDef } from '../../types/contextMenu';
@@ -15,8 +16,9 @@ import { DesktopSelection } from './DesktopSelection';
 import { ContextMenuManager } from '../../contextmenu/ContextMenuManager';
 import { useDesktopStore, type SelectionBox } from '../../stores/desktopStore';
 import { useContextMenuStore } from '../../stores/contextMenuStore';
-import { useUIStore } from '../../stores/uiStore';
+import { useThemeStore } from '../../stores/themeStore';
 import { WALLPAPERS } from '../../theme/wallpapers';
+import { useDroppable } from '../../dnd/useDroppable';
 
 export interface DesktopSurfaceProps {
   onOpenApp: (item: DesktopIconItem) => void;
@@ -31,23 +33,49 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
     sortMode,
     sortOrder,
     autoArrange,
+    snapToGrid,
     selectIcon,
     setSelectedIcons,
     clearSelection,
     setSelectionBox,
     sortIcons,
     toggleAutoArrange,
+    setSnapToGrid,
+    moveIcon,
+    moveSelectedIcons,
     rearrangeIcons,
   } = useDesktopStore();
 
-  const { setWallpaper, currentWallpaper, desktopIconSize, setDesktopIconSize, setTheme, theme } = useUIStore();
+  const { wallpaper, setWallpaper, currentTheme, setThemeMode, density, setDensity } = useThemeStore();
   const openContextMenu = useContextMenuStore((state) => state.openContextMenu);
 
-  const isDraggingRef = useRef(false);
+  const isDraggingSelectionRef = useRef(false);
   const dragStartPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  // Register droppable surface for desktop icons
+  const { ref: droppableRef } = useDroppable({
+    id: 'desktop-droppable-surface',
+    type: 'desktop-surface',
+    accepts: (dragItem) => dragItem.type === 'desktop-icon',
+    onDrop: (dragItem, dropPos) => {
+      const iconData = dragItem.data as DesktopIconItem;
+      const gridCellSize = density === 'compact' ? 80 : density === 'spacious' ? 112 : 96;
+
+      const targetCol = Math.max(0, Math.floor((dropPos.x - 16) / gridCellSize));
+      const targetRow = Math.max(0, Math.floor((dropPos.y - 16) / gridCellSize));
+
+      if (selectedIconIds.includes(iconData.id) && selectedIconIds.length > 1) {
+        const deltaCols = targetCol - (iconData.gridCol ?? 0);
+        const deltaRows = targetRow - (iconData.gridRow ?? 0);
+        moveSelectedIcons(deltaCols, deltaRows);
+      } else {
+        moveIcon(iconData.id, targetCol, targetRow);
+      }
+    },
+  });
+
   const handleCycleWallpaper = () => {
-    const currentIndex = WALLPAPERS.findIndex((w) => w.id === currentWallpaper.id);
+    const currentIndex = WALLPAPERS.findIndex((w) => w.id === wallpaper.id);
     const nextIndex = (currentIndex + 1) % WALLPAPERS.length;
     setWallpaper(WALLPAPERS[nextIndex].id);
   };
@@ -62,22 +90,22 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
         icon: <Eye size={15} />,
         children: [
           {
-            id: 'view-large',
-            label: 'Large Icons',
-            checked: desktopIconSize === 'large',
-            onClick: () => setDesktopIconSize('large'),
+            id: 'density-spacious',
+            label: 'Large / Spacious Icons',
+            checked: density === 'spacious',
+            onClick: () => setDensity('spacious'),
           },
           {
-            id: 'view-medium',
-            label: 'Medium Icons',
-            checked: desktopIconSize === 'medium',
-            onClick: () => setDesktopIconSize('medium'),
+            id: 'density-comfortable',
+            label: 'Medium / Normal Icons',
+            checked: density === 'comfortable',
+            onClick: () => setDensity('comfortable'),
           },
           {
-            id: 'view-small',
-            label: 'Small Icons',
-            checked: desktopIconSize === 'small',
-            onClick: () => setDesktopIconSize('small'),
+            id: 'density-compact',
+            label: 'Small / Compact Icons',
+            checked: density === 'compact',
+            onClick: () => setDensity('compact'),
           },
           'separator',
           {
@@ -85,6 +113,13 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
             label: 'Auto Arrange Icons',
             checked: autoArrange,
             onClick: toggleAutoArrange,
+          },
+          {
+            id: 'snap-grid',
+            label: 'Align Icons to Grid',
+            checked: snapToGrid,
+            icon: <Grid size={14} />,
+            onClick: () => setSnapToGrid(!snapToGrid),
           },
         ],
       },
@@ -149,9 +184,9 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
       },
       {
         id: 'toggle-theme',
-        label: `Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`,
+        label: `Switch Theme (${currentTheme.name})`,
         icon: <Palette size={15} />,
-        onClick: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
+        onClick: () => setThemeMode(currentTheme.mode === 'dark' ? 'light' : 'dark'),
       },
       'separator',
       {
@@ -180,7 +215,7 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
     }
 
     clearSelection();
-    isDraggingRef.current = true;
+    isDraggingSelectionRef.current = true;
     dragStartPosRef.current = { x: e.clientX, y: e.clientY };
     setSelectionBox({
       startX: e.clientX,
@@ -191,7 +226,7 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDraggingRef.current) return;
+    if (!isDraggingSelectionRef.current) return;
 
     const currentBox: SelectionBox = {
       startX: dragStartPosRef.current.x,
@@ -201,7 +236,6 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
     };
     setSelectionBox(currentBox);
 
-    // Compute intersecting icons
     const left = Math.min(currentBox.startX, currentBox.currentX);
     const right = Math.max(currentBox.startX, currentBox.currentX);
     const top = Math.min(currentBox.startY, currentBox.currentY);
@@ -219,7 +253,7 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
         rect.bottom > top;
 
       if (intersects) {
-        const id = el.getAttribute('data-icon-id');
+        const id = el.getAttribute('data-icon-id') || el.getAttribute('data-testid')?.replace('desktop-icon-', 'icon-');
         if (id) selected.push(id);
       }
     });
@@ -228,14 +262,15 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
   };
 
   const handleMouseUp = () => {
-    if (isDraggingRef.current) {
-      isDraggingRef.current = false;
+    if (isDraggingSelectionRef.current) {
+      isDraggingSelectionRef.current = false;
       setSelectionBox(null);
     }
   };
 
   return (
     <div
+      ref={droppableRef}
       className="os-desktop-surface"
       data-testid="desktop-surface"
       onContextMenu={handleContextMenu}
@@ -247,7 +282,7 @@ export const DesktopSurface: React.FC<DesktopSurfaceProps> = ({ onOpenApp }) => 
         icons={icons}
         selectedIconIds={selectedIconIds}
         focusedIconId={focusedIconId}
-        size={desktopIconSize}
+        size={density === 'compact' ? 'small' : density === 'spacious' ? 'large' : 'medium'}
         onSelectIcon={selectIcon}
         onOpenIcon={onOpenApp}
       />

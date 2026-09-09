@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import clsx from 'clsx';
 import type { DesktopIconItem } from '../../types/desktop';
 import { Badge } from '../../ui/Badge/Badge';
+import { useDraggable } from '../../dnd/useDraggable';
 
 export interface DesktopIconProps {
   item: DesktopIconItem;
@@ -23,6 +24,12 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
   onContextMenu,
 }) => {
   const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { isDragging, dragProps } = useDraggable({
+    id: item.id,
+    type: 'desktop-icon',
+    data: item,
+  });
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -80,12 +87,14 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
         'os-desktop-icon',
         `os-desktop-icon--${size}`,
         isSelected && 'os-desktop-icon--selected',
-        isFocused && 'os-desktop-icon--focused'
+        isFocused && 'os-desktop-icon--focused',
+        isDragging && 'os-desktop-icon--dragging'
       )}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onKeyDown={handleKeyDown}
       onContextMenu={handleContextMenu}
+      {...dragProps}
     >
       <div className="os-desktop-icon__graphic-wrapper">
         <div

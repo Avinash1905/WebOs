@@ -1,5 +1,5 @@
 :root {
-  /* Core Color Palette */
+  /* Core Color Palette Defaults (Dark) */
   --os-color-brand: #3b82f6;
   --os-color-brand-hover: #2563eb;
   --os-color-brand-glow: rgba(59, 130, 246, 0.45);
@@ -12,7 +12,7 @@
   --os-color-danger: #ef4444;
   --os-color-danger-hover: #dc2626;
 
-  /* Dark Theme Tokens (Default) */
+  /* Dark Theme Tokens */
   --os-bg: #090d16;
   --os-surface-base: rgba(15, 23, 42, 0.75);
   --os-surface-elevated: rgba(30, 41, 59, 0.85);
@@ -32,6 +32,12 @@
   --os-border-subtle: rgba(255, 255, 255, 0.08);
   --os-border-default: rgba(255, 255, 255, 0.15);
   --os-border-focus: #3b82f6;
+  --os-border-glass: rgba(255, 255, 255, 0.12);
+
+  /* Focus & Selection */
+  --os-focus-ring: #3b82f6;
+  --os-selection-bg: rgba(59, 130, 246, 0.35);
+  --os-selection-border: #3b82f6;
 
   /* Elevation Shadows */
   --os-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
@@ -57,13 +63,15 @@
   --os-space-6: 24px;
   --os-space-8: 32px;
 
+  /* Density Defaults */
+  --os-taskbar-height: 48px;
+  --os-icon-grid-size: 96px;
+  --os-padding-scale: 1;
+
   /* Blur & Glassmorphism */
   --os-blur-subtle: blur(12px);
   --os-blur-acrylic: blur(20px) saturate(180%);
   --os-blur-heavy: blur(32px);
-
-  /* Taskbar Dimensions */
-  --os-taskbar-height: 48px;
 
   /* Z-Index Layering */
   --os-z-desktop: 1;
@@ -76,6 +84,8 @@
   --os-z-context-menu: 1000;
   --os-z-modal: 1100;
   --os-z-tooltip: 1200;
+  --os-z-dnd-preview: 1500;
+  --os-z-announcer: 2000;
 
   /* Transitions */
   --os-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -83,6 +93,7 @@
   --os-transition-spring: 350ms cubic-bezier(0.175, 0.885, 0.32, 1.15);
 }
 
+/* Light Mode Overrides */
 [data-theme='light'] {
   --os-bg: #f1f5f9;
   --os-surface-base: rgba(255, 255, 255, 0.8);
@@ -100,10 +111,88 @@
 
   --os-border-subtle: rgba(0, 0, 0, 0.06);
   --os-border-default: rgba(0, 0, 0, 0.12);
+  --os-border-glass: rgba(0, 0, 0, 0.08);
 
   --os-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
   --os-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
   --os-shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.05);
   --os-shadow-window: 0 20px 48px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);
   --os-shadow-window-focused: 0 25px 60px rgba(0, 0, 0, 0.25), 0 0 15px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.5);
+}
+
+/* High Contrast Mode (WCAG AAA Compliant) */
+[data-theme='high-contrast'] {
+  --os-bg: #000000;
+  --os-surface-base: #000000;
+  --os-surface-elevated: #0a0a0a;
+  --os-surface-hover: #1f1f1f;
+  --os-surface-active: #2e2e2e;
+  --os-surface-glass: #000000;
+  --os-surface-glass-border: #ffffff;
+  --os-surface-solid: #000000;
+
+  --os-text-primary: #ffffff;
+  --os-text-secondary: #ffffff;
+  --os-text-muted: #dddddd;
+  --os-text-inverse: #000000;
+
+  --os-color-brand: #ffff00;
+  --os-color-brand-hover: #ffffff;
+  --os-color-accent: #00ffff;
+  --os-color-success: #00ff00;
+  --os-color-warning: #ffff00;
+  --os-color-danger: #ff0055;
+
+  --os-border-subtle: #ffffff;
+  --os-border-default: #ffffff;
+  --os-border-focus: #ffff00;
+  --os-border-glass: #ffffff;
+
+  --os-focus-ring: #ffff00;
+  --os-selection-bg: #003366;
+  --os-selection-border: #ffff00;
+
+  --os-blur-subtle: none;
+  --os-blur-acrylic: none;
+  --os-blur-heavy: none;
+
+  --os-shadow-sm: none;
+  --os-shadow-md: none;
+  --os-shadow-lg: 0 0 0 2px #ffffff;
+  --os-shadow-window: 0 0 0 2px #ffffff;
+  --os-shadow-window-focused: 0 0 0 3px #ffff00, 0 0 8px #ffff00;
+}
+
+/* Density Modifiers */
+[data-density='compact'] {
+  --os-taskbar-height: 40px;
+  --os-icon-grid-size: 80px;
+  --os-padding-scale: 0.75;
+}
+
+[data-density='spacious'] {
+  --os-taskbar-height: 56px;
+  --os-icon-grid-size: 112px;
+  --os-padding-scale: 1.25;
+}
+
+/* Reduced Motion Override */
+[data-reduced-motion='true'] *,
+[data-reduced-motion='true'] *::before,
+[data-reduced-motion='true'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

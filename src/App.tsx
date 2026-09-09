@@ -8,9 +8,10 @@ import { NotificationToastContainer } from './notifications/NotificationToastCon
 import { NotificationCenter } from './shell/notifications/NotificationCenter';
 import { QuickSettingsPanel } from './shell/quicksettings/QuickSettingsPanel';
 import { GlobalSearchOverlay } from './shell/search/GlobalSearchOverlay';
-import { ContextMenuManager } from './contextmenu/ContextMenuManager';
+import { LiveAnnouncer } from './a11y/LiveAnnouncer';
+import { ErrorBoundary } from './errors/ErrorBoundary';
 import { useWindowStore } from './stores/windowStore';
-import { useUIStore } from './stores/uiStore';
+import { useThemeStore } from './stores/themeStore';
 import { useNotificationStore } from './stores/notificationStore';
 import { useWindowShortcuts } from './keyboard/useWindowShortcuts';
 import type { DesktopIconItem } from './types/desktop';
@@ -18,16 +19,18 @@ import { appRegistry, type AppDefinition } from './contracts/appRegistry';
 
 export const App: React.FC = () => {
   const { openWindow } = useWindowStore();
-  const { theme } = useUIStore();
+  const currentTheme = useThemeStore((state) => state.currentTheme);
+  const density = useThemeStore((state) => state.density);
   const addNotification = useNotificationStore((state) => state.addNotification);
 
   // Activate global keyboard shortcuts
   useWindowShortcuts();
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', currentTheme.mode);
+    document.documentElement.setAttribute('data-density', density);
 
-    // Initial welcoming window for demonstration
+    // Initial welcoming window
     const pcApp = appRegistry.getApplication('pc');
     if (pcApp) {
       openWindow({
@@ -45,19 +48,19 @@ export const App: React.FC = () => {
       });
     }
 
-    // Welcome system notification
+    // Phase 4 ready welcome notification
     const timer = setTimeout(() => {
       addNotification({
-        title: 'Welcome to WebOS System UI',
-        message: 'Phase 3 active! Press Ctrl+Space for Spotlight Search, Win+A for Quick Settings.',
+        title: 'WebOS Platform Ready',
+        message: 'Themes, Drag-and-Drop, Accessibility, Shortcuts, and Settings active.',
         category: 'system',
         priority: 'normal',
-        durationMs: 6000,
+        durationMs: 5000,
       });
-    }, 1200);
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, [theme, openWindow, addNotification]);
+  }, [currentTheme.mode, density, openWindow, addNotification]);
 
   const handleOpenAppDef = useCallback(
     (app: AppDefinition) => {
@@ -100,25 +103,38 @@ export const App: React.FC = () => {
   );
 
   return (
-    <DesktopShell onOpenApp={handleOpenDesktopIcon}>
-      {/* Complete Window Manager Subsystem */}
-      <WindowManager />
+    <ErrorBoundary fallbackTitle="Desktop Shell Recovery">
+      <DesktopShell onOpenApp={handleOpenDesktopIcon}>
+        {/* Complete Window Manager Subsystem */}
+        <ErrorBoundary fallbackTitle="Window Manager Error">
+          <WindowManager />
+        </ErrorBoundary>
 
-      {/* Start Menu Floating Layer */}
-      <StartMenu onOpenApp={handleOpenAppDef} />
+        {/* Start Menu Floating Layer */}
+        <ErrorBoundary fallbackTitle="Start Menu Error">
+          <StartMenu onOpenApp={handleOpenAppDef} />
+        </ErrorBoundary>
 
-      {/* Fullscreen Application Launchpad */}
-      <AppLauncher onOpenApp={handleOpenAppDef} />
+        {/* Fullscreen Application Launchpad */}
+        <ErrorBoundary fallbackTitle="Application Launcher Error">
+          <AppLauncher onOpenApp={handleOpenAppDef} />
+        </ErrorBoundary>
 
-      {/* Taskbar */}
-      <Taskbar onOpenApp={handleOpenDesktopIcon} />
+        {/* Taskbar */}
+        <ErrorBoundary fallbackTitle="Taskbar Error">
+          <Taskbar onOpenApp={handleOpenDesktopIcon} />
+        </ErrorBoundary>
 
-      {/* Phase 3 System UI Overlays */}
-      <NotificationToastContainer />
-      <NotificationCenter />
-      <QuickSettingsPanel />
-      <GlobalSearchOverlay />
-    </DesktopShell>
+        {/* Phase 3 & 4 System UI Overlays */}
+        <NotificationToastContainer />
+        <NotificationCenter />
+        <QuickSettingsPanel />
+        <GlobalSearchOverlay />
+
+        {/* Screen Reader ARIA Live Announcer */}
+        <LiveAnnouncer />
+      </DesktopShell>
+    </ErrorBoundary>
   );
 };
 

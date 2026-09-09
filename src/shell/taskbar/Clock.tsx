@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Tooltip } from '../../ui/Tooltip/Tooltip';
+import { useTaskbarCustomStore } from '../../stores/taskbarCustomStore';
 
 export interface ClockProps {
-  showSeconds?: boolean;
   className?: string;
   onClick?: () => void;
 }
 
-export const Clock: React.FC<ClockProps> = ({ showSeconds = false, className, onClick }) => {
+export const Clock: React.FC<ClockProps> = ({ className, onClick }) => {
+  const clock24Hour = useTaskbarCustomStore((state) => state.clock24Hour);
+  const showSeconds = useTaskbarCustomStore((state) => state.showSeconds);
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -21,6 +23,7 @@ export const Clock: React.FC<ClockProps> = ({ showSeconds = false, className, on
     hour: '2-digit',
     minute: '2-digit',
     second: showSeconds ? '2-digit' : undefined,
+    hour12: !clock24Hour,
   });
 
   const dateString = time.toLocaleDateString([], {
