@@ -7,6 +7,7 @@ import { Kernel } from '../../core/kernel/Kernel.js';
 import { EventBus } from '../../core/events/EventBus.js';
 import { StorageEngine } from '../../core/storage/StorageEngine.js';
 import { FileSystem } from '../../core/filesystem/FileSystem.js';
+import { member2Shell, Member2Shell } from '../../core/shell/Member2Shell.js';
 
 export interface ClipboardItem {
   paths: string[];
@@ -21,6 +22,7 @@ export class WebOSPlatformService {
   public readonly eventBus: EventBus;
   public readonly storage: StorageEngine;
   public readonly fileSystem: FileSystem;
+  public readonly shell: Member2Shell;
   
   private clipboardData: ClipboardItem | null = null;
   private isInitialized = false;
@@ -30,6 +32,7 @@ export class WebOSPlatformService {
     this.eventBus = new EventBus();
     this.storage = new StorageEngine({ eventBus: this.eventBus });
     this.fileSystem = new FileSystem({ storage: this.storage, eventBus: this.eventBus });
+    this.shell = member2Shell;
 
     this.kernel.registerService(this.eventBus);
     this.kernel.registerService(this.storage);

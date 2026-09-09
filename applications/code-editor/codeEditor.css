@@ -1,0 +1,575 @@
+/**
+ * @file applications/code-editor/codeEditor.css
+ * @description VS Code dark theme styling for WebOS Code Editor.
+ */
+
+.code-editor-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+.editor-main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Activity Bar */
+.editor-activity-bar {
+  width: 48px;
+  background-color: #333333;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #252526;
+  z-index: 10;
+}
+
+.activity-top-group,
+.activity-bottom-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.activity-btn {
+  width: 48px;
+  height: 48px;
+  background: none;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.activity-btn:hover {
+  color: #ffffff;
+}
+
+.activity-btn.active {
+  color: #ffffff;
+  border-left: 2px solid #007acc;
+  background-color: #252526;
+}
+
+/* Sidebar Panels */
+.editor-sidebar-panel {
+  width: 240px;
+  background-color: #252526;
+  border-right: 1px solid #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.explorer-header, .search-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #bbbbbb;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.explorer-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.icon-btn:hover {
+  color: #ffffff;
+  background-color: #37373d;
+}
+
+.explorer-root-bar {
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #cccccc;
+  background-color: #2a2d2e;
+}
+
+.explorer-tree-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+
+.tree-node-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #cccccc;
+}
+
+.tree-node-row:hover {
+  background-color: #37373d;
+}
+
+.tree-indent-spacer {
+  width: 14px;
+}
+
+.node-icon {
+  color: #007acc;
+}
+
+.file-icon {
+  color: #519aba;
+}
+
+/* Center Editor Area */
+.editor-center-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Tab Bar */
+.editor-tab-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #252526;
+  height: 35px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.editor-tabs-scroll {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  height: 100%;
+}
+
+.editor-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  height: 100%;
+  background-color: #2d2d2d;
+  color: #969696;
+  font-size: 12px;
+  border-right: 1px solid #252526;
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-tab.active {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-top: 2px solid #007acc;
+}
+
+.dirty-indicator {
+  color: #e2c08d;
+  margin-left: 4px;
+}
+
+.tab-close-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.6;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.tab-close-btn:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.new-tab-btn, .close-all-btn {
+  background: none;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.new-tab-btn:hover, .close-all-btn:hover {
+  color: #ffffff;
+}
+
+/* Editor Canvas */
+.editor-area-canvas {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  background-color: #1e1e1e;
+}
+
+.line-numbers-col {
+  width: 48px;
+  background-color: #1e1e1e;
+  border-right: 1px solid #282828;
+  padding: 8px 0;
+  user-select: none;
+  text-align: right;
+  padding-right: 10px;
+  color: #858585;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+}
+
+.line-number.active-line-num {
+  color: #c6c6c6;
+}
+
+.editor-text-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.syntax-highlight-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: pre;
+}
+
+.syntax-line {
+  height: 1.5em;
+}
+
+.active-syntax-line {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.editor-textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 12px;
+  background: transparent;
+  color: transparent;
+  caret-color: #aeafad;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: auto;
+}
+
+/* Syntax Token Colors */
+.token-keyword { color: #569cd6; font-weight: 600; }
+.token-string { color: #ce9178; }
+.token-number { color: #b5cea8; }
+.token-comment { color: #6a9955; font-style: italic; }
+.token-operator { color: #d4d4d4; }
+.token-function { color: #dcdcaa; }
+.token-plain { color: #d4d4d4; }
+
+/* Minimap */
+.editor-minimap-panel {
+  width: 70px;
+  background-color: #1e1e1e;
+  border-left: 1px solid #252526;
+  padding: 8px 4px;
+  overflow: hidden;
+  user-select: none;
+  opacity: 0.6;
+}
+
+.minimap-line-fill {
+  height: 2px;
+  background-color: #569cd6;
+  margin-bottom: 2px;
+  border-radius: 1px;
+}
+
+/* Integrated Terminal Panel */
+.integrated-terminal-panel {
+  background-color: #1e1e1e;
+  border-top: 1px solid #007acc;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.terminal-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #252526;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #cccccc;
+}
+
+.pane-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-pane-body {
+  flex: 1;
+  padding: 8px 12px;
+  overflow-y: auto;
+  font-family: 'Fira Code', Monospace;
+  font-size: 13px;
+  color: #d4d4d4;
+}
+
+.terminal-prompt-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.prompt-prefix {
+  color: #38bdf8;
+}
+
+.prompt-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Status Bar */
+.editor-status-bar {
+  height: 22px;
+  background-color: #007acc;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-size: 11px;
+  user-select: none;
+}
+
+.status-left, .status-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-item {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+/* Search Panel */
+.editor-search-panel {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  background-color: #3c3c3c;
+  border: 1px solid #3c3c3c;
+  border-radius: 4px;
+  padding: 4px 8px;
+  gap: 6px;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.search-options-row, .search-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-label {
+  font-size: 12px;
+  color: #cccccc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary { background-color: #0e639c; color: #fff; }
+.btn-secondary { background-color: #3c3c3c; color: #fff; }
+
+/* Command Palette Overlay */
+.palette-modal-overlay, .settings-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 30px;
+  z-index: 500;
+}
+
+.palette-modal {
+  width: 520px;
+  background-color: #252526;
+  border: 1px solid #454545;
+  border-radius: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.palette-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.palette-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.palette-list {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.palette-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.palette-item:hover {
+  background-color: #04395e;
+}
+
+.category-tag {
+  background-color: #37373d;
+  color: #007acc;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+.item-shortcut {
+  font-size: 11px;
+  color: #858585;
+}
+
+/* Settings Modal */
+.settings-modal {
+  width: 480px;
+  background-color: #252526;
+  border: 1px solid #454545;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.settings-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #3c3c3c;
+  font-weight: 600;
+}
+
+.settings-modal-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.setting-input, .setting-select {
+  background-color: #3c3c3c;
+  border: 1px solid #3c3c3c;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  outline: none;
+}

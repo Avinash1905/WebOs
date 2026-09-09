@@ -8,6 +8,8 @@ import { FileManagerApp } from '../../../applications/file-manager/FileManagerAp
 import { TextEditorApp } from '../../../applications/text-editor/TextEditorApp.js';
 import { NotesApp } from '../../../applications/notes/NotesApp.js';
 import { DocumentEditorApp } from '../../../applications/document-editor/DocumentEditorApp.js';
+import { TerminalApp } from '../../../applications/terminal/TerminalApp.js';
+import { CodeEditorApp } from '../../../applications/code-editor/CodeEditorApp.js';
 
 export interface WindowContentProps {
   children?: React.ReactNode;
@@ -25,8 +27,12 @@ export const WindowContent: React.FC<WindowContentProps> = ({ children, classNam
       case 'documents':
         return <FileManagerApp />;
       case 'text-editor':
-      case 'editor':
         return <TextEditorApp initialFilePath={data?.initialFilePath} />;
+      case 'code-editor':
+      case 'editor':
+        return <CodeEditorApp initialFilePath={data?.initialFilePath} />;
+      case 'terminal':
+        return <TerminalApp />;
       case 'notes':
         return <NotesApp />;
       case 'document-editor':

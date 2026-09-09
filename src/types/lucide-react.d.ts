@@ -95,6 +95,7 @@ declare module 'lucide-react' {
   export const Replace: LucideIcon;
   export const ReplaceAll: LucideIcon;
   export const HardDrive: LucideIcon;
+  export const Sliders: LucideIcon;
 
   const content: Record<string, LucideIcon>;
   export default content;
