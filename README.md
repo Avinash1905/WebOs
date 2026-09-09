@@ -1,6 +1,6 @@
 # WebOS — OS Core & System Engine (Member 2)
 
-The central operating system runtime, service orchestration engine, and messaging bus for **WebOS**.
+The central operating system runtime, service orchestration engine, messaging bus, and persistence engine for **WebOS**.
 
 ---
 
@@ -20,14 +20,18 @@ The central operating system runtime, service orchestration engine, and messagin
 |  - Topological DAG Resolution      |   |  - Priority dispatching (FIFO for equal) |
 |  - Cycle & Missing Dep Detection   |   |  - Async event support (emitAsync)       |
 |  - Graceful Shutdown & Rollback    |   |  - Bounded history & diagnostics stats   |
-+------------------------------------+   +------------------------------------------+
-                     |                                     |
-                     +------------------+------------------+
-                                        |
-                                        v
++--------------------+---------------+   +--------------------+---------------------+
+                     |                                        |
+                     +-------------------+--------------------+
+                                         |
+                                         v
 +-----------------------------------------------------------------------------------+
-|                            Core System Services                                   |
-|   FileSystem | Storage | ProcessManager | Applications | Permissions | Users      |
+|                                  StorageEngine                                    |
+|   - Modular Persistence Abstraction (IndexedDB / Memory)                          |
+|   - Bounded LRU Cache & Invalidation by Key/Namespace                            |
+|   - Type-Safe Serializer (Dates, RegExps, Buffers, Maps, Sets)                   |
+|   - Logical Namespaces ('filesystem', 'settings', 'users', etc.)                  |
+|   - Atomic Transactions, Batch Operations & Quota Monitoring                      |
 +-----------------------------------------------------------------------------------+
 ```
 
@@ -36,36 +40,23 @@ The central operating system runtime, service orchestration engine, and messagin
 ## Modules
 
 ### Module 1: Kernel / Core Engine (`core/kernel/`)
-
-Coordinates system startup, validates and sorts service dependencies, and manages lifecycle transitions.
-
-- **Service Lifecycle State Machine**: Full lifecycle tracking (`REGISTERED`, `INITIALIZING`, `INITIALIZED`, `STARTING`, `RUNNING`, `STOPPING`, `STOPPED`, `FAILED`).
-- **Topological Dependency Resolution**: Directed Acyclic Graph (DAG) ordering with Kahn's algorithm ensuring dependencies start before dependents.
-- **Reverse Shutdown Ordering**: Guarantees dependents stop before prerequisites.
-- **Cycle Detection**: Automatic cycle detection and exact path reporting (`A -> B -> C -> A`).
-- **Rollback on Startup Failure**: Automatically halts and tears down previously started services in reverse order if any downstream service fails during startup.
-- **Typed Error Hierarchy**: Granular error types (`MissingDependencyError`, `CircularDependencyError`, `ServiceStartupError`, `KernelTimeoutError`, etc.).
-- **System Event Hooks**: Lifecycle event hooks (`SYSTEM_INITIALIZING`, `SYSTEM_INITIALIZED`, `SYSTEM_STARTING`, `SYSTEM_STARTED`, `SYSTEM_STOPPING`, `SYSTEM_STOPPED`, `SYSTEM_ERROR`).
+- Coordinates system startup, validates and sorts service dependencies using Kahn's topological sort.
+- Gracefully halts and rolls back started services in reverse order if startup fails.
+- Complete lifecycle state machine and typed error hierarchy.
 
 ### Module 2: System Event Bus (`core/events/`)
+- Strongly-typed master event map (`SystemEventMap`) covering System Lifecycle, FileSystem, Process, Application, User/Session, Storage, Security/Permissions.
+- Priority listener queues, async emission (`emitAsync`), wildcard listeners (`subscribeAll`).
+- Bounded FIFO history buffer with multi-field filtering and error isolation.
 
-Decoupled, strongly-typed messaging backbone connecting all OS components.
-
-- **Master Event Map (`SystemEventMap`)**: Strict TypeScript contracts for payloads across all categories:
-  - **System Lifecycle**: `SYSTEM_INITIALIZING`, `SYSTEM_INITIALIZED`, `SYSTEM_STARTING`, `SYSTEM_STARTED`, `SYSTEM_STOPPING`, `SYSTEM_STOPPED`, `SYSTEM_ERROR`
-  - **File System**: `FILE_CREATED`, `FILE_UPDATED`, `FILE_DELETED`, `FILE_RENAMED`, `FILE_MOVED`, `FILE_COPIED`, `DIRECTORY_CREATED`, `DIRECTORY_DELETED`, `DIRECTORY_RENAMED`, `DIRECTORY_MOVED`
-  - **Process**: `PROCESS_CREATED`, `PROCESS_STARTED`, `PROCESS_PAUSED`, `PROCESS_RESUMED`, `PROCESS_STOPPED`, `PROCESS_TERMINATED`, `PROCESS_RESTARTED`, `PROCESS_ERROR`
-  - **Application**: `APP_REGISTERED`, `APP_OPENED`, `APP_CLOSED`, `APP_ERROR`
-  - **User & Session**: `USER_LOGIN`, `USER_LOGOUT`, `SESSION_STARTED`, `SESSION_ENDED`
-  - **Storage**: `STORAGE_READY`, `STORAGE_CHANGED`, `STORAGE_QUOTA_WARNING`, `STORAGE_ERROR`
-  - **Security & Permissions**: `PERMISSION_GRANTED`, `PERMISSION_DENIED`, `PERMISSION_REVOKED`, `SECURITY_VIOLATION`
-- **Standardized Envelope (`SystemEvent<T>`)**: Unique event ID (`evt_<timestamp>_<counter>_<rand>`), timestamp, source module, payload, and optional `correlationId`, `userId`, `processId`, `applicationId`.
-- **Subscription Management**: `subscribe()`, `once()`, `unsubscribe()`, `subscribeAll()` (wildcard listeners).
-- **Execution Priority**: Configurable priority ordering (higher priority runs first; FIFO for equal priority).
-- **Async Delivery**: `emitAsync()` awaits asynchronous subscribers with isolated error handling.
-- **Error Isolation**: Failing subscribers do not disrupt other subscribers or trigger infinite error loops.
-- **Bounded History Buffer**: Configurable FIFO history buffer (default 500) with rich multi-field filtering (`type`, `source`, `correlationId`, `userId`, `time range`, `limit`).
-- **Kernel Integration**: Extends `BaseSystemService` (`name: 'event-bus'`) and bridges Kernel lifecycle events via `attachToKernel()`.
+### Module 3: Storage Engine (`core/storage/`)
+- **Storage Adapters**: Production `IndexedDBAdapter` and in-memory `MemoryAdapter`.
+- **LRU Cache Layer (`CacheManager`)**: High-performance in-memory cache (default 500 items) with key and namespace invalidation.
+- **Serialization & Deserialization (`Serializer`, `Deserializer`)**: Reconstructs `Date`, `RegExp`, `Uint8Array`, `ArrayBuffer`, `Map`, `Set`, with circular dependency protection.
+- **Logical Namespaces (`NamespaceStorage`)**: Scoped storage partitions (e.g. `storage.namespace('filesystem')`) sharing the underlying store with stripped prefix querying.
+- **Atomic Transactions (`StorageTransaction`)**: Staged operations with atomic commit/rollback.
+- **Batch Operations**: High-throughput `getMany`, `setMany`, `deleteMany`.
+- **Quota & Diagnostics**: Browser quota estimation, threshold warnings (`STORAGE_QUOTA_WARNING`), active health checks, and metrics.
 
 ---
 
@@ -83,13 +74,28 @@ core/
 │   ├── KernelError.ts
 │   ├── types.ts
 │   └── index.ts
-└── events/
-    ├── EventBus.ts
-    ├── EventTypes.ts
-    ├── EventPayloads.ts
-    ├── EventSubscription.ts
-    ├── EventHistory.ts
-    ├── EventError.ts
+├── events/
+│   ├── EventBus.ts
+│   ├── EventTypes.ts
+│   ├── EventPayloads.ts
+│   ├── EventSubscription.ts
+│   ├── EventHistory.ts
+│   ├── EventError.ts
+│   ├── types.ts
+│   └── index.ts
+└── storage/
+    ├── StorageEngine.ts
+    ├── StorageAdapter.ts
+    ├── IndexedDBAdapter.ts
+    ├── MemoryAdapter.ts
+    ├── Serializer.ts
+    ├── Deserializer.ts
+    ├── CacheManager.ts
+    ├── QuotaManager.ts
+    ├── RecoveryManager.ts
+    ├── StorageTransaction.ts
+    ├── StorageError.ts
+    ├── StorageConfig.ts
     ├── types.ts
     └── index.ts
 ```
@@ -98,88 +104,89 @@ core/
 
 ## Code Examples
 
-### 1. Initializing Kernel and Registering EventBus
+### 1. Bootstrapping Kernel with EventBus and StorageEngine
 
 ```ts
 import { Kernel } from './core/kernel/index.js';
 import { EventBus } from './core/events/index.js';
+import { StorageEngine } from './core/storage/index.js';
 
 const kernel = new Kernel();
 const eventBus = new EventBus();
+const storage = new StorageEngine({ eventBus });
 
-// Register EventBus as a core OS service
+// Register core OS services
 kernel.registerService(eventBus);
+kernel.registerService(storage);
 
 // Bridge Kernel lifecycle events into EventBus
 eventBus.attachToKernel(kernel);
 
-// Start the OS runtime
+// Initialize and start OS runtime
 await kernel.initialize();
 await kernel.start();
 ```
 
-### 2. Subscribing & Emitting Typed Events
+### 2. Using Namespaces (Future Virtual File System Example)
 
 ```ts
-import { EventBus } from './core/events/index.js';
+import { StorageEngine } from './core/storage/index.js';
 
-const eventBus = new EventBus();
+const storage = new StorageEngine();
+await storage.initialize();
 
-// Strongly-typed subscription
-const unsubscribe = eventBus.subscribe('FILE_CREATED', (payload, event) => {
-  console.log(`Created file ${payload.path} from source ${event.source}`);
+// Scoped namespace for Virtual File System
+const vfsStorage = storage.namespace('filesystem');
+
+// Persisting file metadata
+interface FileMetadata {
+  id: string;
+  name: string;
+  size: number;
+  createdAt: Date;
+}
+
+await vfsStorage.set('file:123', {
+  id: '123',
+  name: 'document.pdf',
+  size: 1048576,
+  createdAt: new Date(),
 });
 
-// Emitting an event
-eventBus.emit('FILE_CREATED', {
-  path: '/home/user/document.txt',
-  size: 2048,
-}, {
-  source: 'filesystem',
-  correlationId: 'tx_9812',
-});
-
-// Clean unsubscription
-unsubscribe();
+// Retrieving and type reconstruction
+const file = await vfsStorage.get<FileMetadata>('file:123');
+console.log(file?.name, file?.createdAt instanceof Date); // true
 ```
 
-### 3. Priority and One-Time Listeners
+### 3. Atomic Storage Transactions
 
 ```ts
-// High priority shutdown hook
-eventBus.subscribe('SYSTEM_STOPPING', async () => {
-  console.log('Flushing critical storage buffers...');
-}, { priority: 100 });
-
-// One-time listener
-eventBus.once('APP_OPENED', (payload) => {
-  console.log(`App ${payload.appId} opened for first time`);
+await storage.transaction(async (tx) => {
+  tx.set('account:alice', { balance: 50 });
+  tx.set('account:bob', { balance: 150 });
+  tx.delete('pending_transfer:tx_99');
 });
 ```
 
-### 4. Querying Event History & Statistics
+### 4. Storage Health Check & Statistics
 
 ```ts
-// Filter event history
-const fsHistory = eventBus.getHistory({
-  source: 'filesystem',
-  limit: 10,
-});
+const health = await storage.healthCheck();
+console.log(`Healthy: ${health.healthy}, Latency: ${health.latencyMs}ms`);
 
-// Get diagnostic statistics
-const stats = eventBus.getStats();
-console.log(`Total Emitted: ${stats.emittedEvents}, Active Listeners: ${stats.activeListeners}`);
+const stats = await storage.getStats();
+console.log(`Reads: ${stats.reads}, Writes: ${stats.writes}, Cache Hits: ${stats.cacheHits}`);
 ```
 
 ---
 
-## Testing & Quality Assurance
+## Testing & Verification
 
 ```bash
-# Run Vitest test suite
+# Run Vitest test suite (77 tests across 5 test files)
 npm test
 
-# Run strict TypeScript compiler verification
+# Run strict TypeScript typechecking
 npm run typecheck
 
 # Build distribution output
