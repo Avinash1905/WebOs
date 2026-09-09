@@ -121,16 +121,8 @@ export const WindowContainer: React.FC<WindowContainerProps> = ({
         onPointerDownDrag={handleDragPointerDown}
       />
 
-      <WindowContent>
-        {children || win.content || (
-          <div className="os-window__default-content">
-            <div className="os-window__placeholder-card">
-              <h3>{win.title}</h3>
-              <p>Application sandbox ready for Member 3 integration.</p>
-              <div className="os-window__app-badge">App ID: {win.appId}</div>
-            </div>
-          </div>
-        )}
+      <WindowContent appId={win.appId} data={win.data}>
+        {children || win.content}
       </WindowContent>
 
       <WindowResizeHandles

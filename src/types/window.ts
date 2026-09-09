@@ -59,6 +59,7 @@ export interface WindowInstance {
   isFocused: boolean;
   zIndex: number;
   content?: ReactNode;
+  data?: any;
   canMinimize?: boolean;
   canMaximize?: boolean;
   canClose?: boolean;
@@ -82,6 +83,7 @@ export interface WindowOpenConfig {
   maxWidth?: number;
   maxHeight?: number;
   content?: ReactNode;
+  data?: any;
   canMinimize?: boolean;
   canMaximize?: boolean;
   canClose?: boolean;
