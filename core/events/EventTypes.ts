@@ -61,15 +61,17 @@ export type ProcessEventType =
 export const APPLICATION_EVENTS = {
   APP_REGISTERED: 'APP_REGISTERED',
   APP_UNREGISTERED: 'APP_UNREGISTERED',
+  APP_INSTALLED: 'APP_INSTALLED',
+  APP_UNINSTALLED: 'APP_UNINSTALLED',
   APP_LAUNCHING: 'APP_LAUNCHING',
   APP_STARTED: 'APP_STARTED',
-  APP_OPENED: 'APP_OPENED',
   APP_PAUSED: 'APP_PAUSED',
   APP_RESUMED: 'APP_RESUMED',
   APP_STOPPING: 'APP_STOPPING',
   APP_STOPPED: 'APP_STOPPED',
-  APP_CLOSED: 'APP_CLOSED',
   APP_CRASHED: 'APP_CRASHED',
+  APP_OPENED: 'APP_OPENED',
+  APP_CLOSED: 'APP_CLOSED',
   APP_ERROR: 'APP_ERROR',
 } as const;
 
@@ -80,16 +82,16 @@ export type ApplicationEventType =
 // 5. User & Session Events
 // ==========================================
 export const USER_EVENTS = {
+  USER_LOGGED_IN: 'USER_LOGGED_IN',
+  USER_LOGGED_OUT: 'USER_LOGGED_OUT',
+  USER_SWITCHED: 'USER_SWITCHED',
   USER_CREATED: 'USER_CREATED',
-  USER_UPDATED: 'USER_UPDATED',
   USER_DELETED: 'USER_DELETED',
-  USER_LOGIN: 'USER_LOGIN',
-  USER_LOGOUT: 'USER_LOGOUT',
-  SESSION_STARTED: 'SESSION_STARTED',
-  SESSION_ENDED: 'SESSION_ENDED',
+  SESSION_EXPIRED: 'SESSION_EXPIRED',
 } as const;
 
-export type UserEventType = (typeof USER_EVENTS)[keyof typeof USER_EVENTS];
+export type UserEventType =
+  (typeof USER_EVENTS)[keyof typeof USER_EVENTS];
 
 // ==========================================
 // 6. Storage Events
@@ -97,8 +99,8 @@ export type UserEventType = (typeof USER_EVENTS)[keyof typeof USER_EVENTS];
 export const STORAGE_EVENTS = {
   STORAGE_READY: 'STORAGE_READY',
   STORAGE_CHANGED: 'STORAGE_CHANGED',
-  STORAGE_QUOTA_WARNING: 'STORAGE_QUOTA_WARNING',
   STORAGE_ERROR: 'STORAGE_ERROR',
+  STORAGE_QUOTA_WARNING: 'STORAGE_QUOTA_WARNING',
 } as const;
 
 export type StorageEventType =
@@ -109,8 +111,8 @@ export type StorageEventType =
 // ==========================================
 export const SECURITY_EVENTS = {
   PERMISSION_GRANTED: 'PERMISSION_GRANTED',
-  PERMISSION_DENIED: 'PERMISSION_DENIED',
   PERMISSION_REVOKED: 'PERMISSION_REVOKED',
+  PERMISSION_DENIED: 'PERMISSION_DENIED',
   SECURITY_VIOLATION: 'SECURITY_VIOLATION',
 } as const;
 
@@ -123,29 +125,24 @@ export type SecurityEventType =
 export const SCHEDULER_EVENTS = {
   SCHEDULER_STARTED: 'SCHEDULER_STARTED',
   SCHEDULER_STOPPED: 'SCHEDULER_STOPPED',
-  SCHEDULER_PAUSED: 'SCHEDULER_PAUSED',
-  SCHEDULER_RESUMED: 'SCHEDULER_RESUMED',
-  SCHEDULER_ERROR: 'SCHEDULER_ERROR',
   PROCESS_SCHEDULED: 'PROCESS_SCHEDULED',
-  PROCESS_PREEMPTED: 'PROCESS_PREEMPTED',
-  PROCESS_COMPLETED: 'PROCESS_COMPLETED',
-  PROCESS_PRIORITY_CHANGED: 'PROCESS_PRIORITY_CHANGED',
+  PROCESS_DESCHEDULED: 'PROCESS_DESCHEDULED',
+  QUANTUM_EXPIRED: 'QUANTUM_EXPIRED',
 } as const;
 
 export type SchedulerEventType =
   (typeof SCHEDULER_EVENTS)[keyof typeof SCHEDULER_EVENTS];
 
 // ==========================================
-// 9. Shell Events
+// 9. Shell / Terminal Events
 // ==========================================
 export const SHELL_EVENTS = {
   SHELL_STARTED: 'SHELL_STARTED',
   SHELL_STOPPED: 'SHELL_STOPPED',
-  SHELL_SESSION_CREATED: 'SHELL_SESSION_CREATED',
-  SHELL_SESSION_CLOSED: 'SHELL_SESSION_CLOSED',
-  COMMAND_STARTED: 'COMMAND_STARTED',
-  COMMAND_COMPLETED: 'COMMAND_COMPLETED',
+  COMMAND_EXECUTED: 'COMMAND_EXECUTED',
   COMMAND_FAILED: 'COMMAND_FAILED',
+  SESSION_CREATED: 'SESSION_CREATED',
+  SESSION_CLOSED: 'SESSION_CLOSED',
 } as const;
 
 export type ShellEventType =
@@ -160,6 +157,7 @@ export const SEARCH_EVENTS = {
   SEARCH_FAILED: 'SEARCH_FAILED',
   SEARCH_INDEX_UPDATED: 'SEARCH_INDEX_UPDATED',
   SEARCH_INDEX_REBUILT: 'SEARCH_INDEX_REBUILT',
+  SEARCH_PERFORMED: 'SEARCH_PERFORMED',
 } as const;
 
 export type SearchEventType =
@@ -181,6 +179,57 @@ export type ClipboardEventType =
   (typeof CLIPBOARD_EVENTS)[keyof typeof CLIPBOARD_EVENTS];
 
 // ==========================================
+// 12. System Services Events
+// ==========================================
+export const SERVICE_EVENTS = {
+  SERVICE_REGISTERED: 'service.registered',
+  SERVICE_UNREGISTERED: 'service.unregistered',
+  SERVICE_STARTING: 'service.starting',
+  SERVICE_STARTED: 'service.started',
+  SERVICE_PAUSED: 'service.paused',
+  SERVICE_RESUMED: 'service.resumed',
+  SERVICE_STOPPING: 'service.stopping',
+  SERVICE_STOPPED: 'service.stopped',
+  SERVICE_FAILED: 'service.failed',
+  SERVICE_RESTARTED: 'service.restarted',
+  SERVICE_HEALTH_CHANGED: 'service.healthChanged',
+} as const;
+
+export type ServiceEventType =
+  (typeof SERVICE_EVENTS)[keyof typeof SERVICE_EVENTS];
+
+// ==========================================
+// 13. Resource Manager Events
+// ==========================================
+export const RESOURCE_EVENTS = {
+  RESOURCE_SNAPSHOT_CREATED: 'resource.snapshotCreated',
+  RESOURCE_MEMORY_WARNING: 'resource.memoryWarning',
+  RESOURCE_STORAGE_WARNING: 'resource.storageWarning',
+  RESOURCE_STORAGE_CRITICAL: 'resource.storageCritical',
+  RESOURCE_LIMIT_REACHED: 'resource.limitReached',
+  RESOURCE_HEALTH_CHANGED: 'resource.healthChanged',
+} as const;
+
+export type ResourceEventType =
+  (typeof RESOURCE_EVENTS)[keyof typeof RESOURCE_EVENTS];
+
+// ==========================================
+// 14. Diagnostics Events
+// ==========================================
+export const DIAGNOSTICS_EVENTS = {
+  DIAGNOSTICS_STARTED: 'diagnostics.started',
+  DIAGNOSTICS_COMPLETED: 'diagnostics.completed',
+  DIAGNOSTICS_FAILED: 'diagnostics.failed',
+  DIAGNOSTICS_WARNING: 'diagnostics.warning',
+  DIAGNOSTICS_CRITICAL: 'diagnostics.critical',
+  DIAGNOSTICS_HEALTH_CHANGED: 'diagnostics.healthChanged',
+  DIAGNOSTICS_ERROR_RECORDED: 'diagnostics.errorRecorded',
+} as const;
+
+export type DiagnosticsEventType =
+  (typeof DIAGNOSTICS_EVENTS)[keyof typeof DIAGNOSTICS_EVENTS];
+
+// ==========================================
 // Combined All System Event Types
 // ==========================================
 export const SYSTEM_EVENT_TYPES = {
@@ -195,6 +244,9 @@ export const SYSTEM_EVENT_TYPES = {
   ...SHELL_EVENTS,
   ...SEARCH_EVENTS,
   ...CLIPBOARD_EVENTS,
+  ...SERVICE_EVENTS,
+  ...RESOURCE_EVENTS,
+  ...DIAGNOSTICS_EVENTS,
 } as const;
 
 export type SystemEventType =
@@ -208,5 +260,7 @@ export type SystemEventType =
   | SchedulerEventType
   | ShellEventType
   | SearchEventType
-  | ClipboardEventType;
-
+  | ClipboardEventType
+  | ServiceEventType
+  | ResourceEventType
+  | DiagnosticsEventType;

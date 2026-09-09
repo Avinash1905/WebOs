@@ -343,9 +343,12 @@ export class EventBus extends BaseSystemService {
     }
 
     return {
+      totalEmitted: this._totalEmitted,
+      activeSubscriptions: totalActive,
+      historySize: this._history.size,
+      eventsByType: counts,
       emittedEvents: this._totalEmitted,
       activeListeners: totalActive,
-      historySize: this._history.size,
       eventCounts: counts,
     };
   }
