@@ -1,20 +1,56 @@
-# WebOS
+# WebOS Operating System
 
-A modern, high-performance browser-based operating system built with React 19, TypeScript, and Vite.
+A modern, high-performance browser-based operating system built with React 19, TypeScript, Vite, and modular OS services.
 
-## Architecture & Responsibilities
+## System Architecture
+
+```text
++-----------------------------------------------------------------------------------+
+|                                 WebOS Kernel                                      |
+|  - Lifecycle State Machine (CREATED -> INITIALIZING -> RUNNING -> ...)            |
+|  - Rollback Coordinator & Timeout Enforcer                                        |
++--------------------+-------------------------------------+------------------------+
+                     |                                     |
+                     v                                     v
++------------------------------------+   +------------------------------------------+
+|          ServiceRegistry           |   |            System Event Bus              |
+|  - Service Registration & Lookup   |   |  - Typed pub/sub & wildcard listeners   |
+|  - Topological DAG Resolution      |   |  - Priority dispatching (FIFO for equal) |
+|  - Cycle & Missing Dep Detection   |   |  - Async event support (emitAsync)       |
+|  - Graceful Shutdown & Rollback    |   |  - Bounded history & diagnostics stats   |
++--------------------+---------------+   +--------------------+---------------------+
+                     |                                        |
+                     +-------------------+--------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                                  StorageEngine                                    |
+|   - Modular Persistence Abstraction (IndexedDB / Memory)                          |
+|   - Bounded LRU Cache & Invalidation by Key/Namespace                            |
+|   - Type-Safe Serializer (Dates, RegExps, Buffers, Maps, Sets)                   |
+|   - Logical Namespaces ('vfs_meta', 'vfs_content', 'settings', etc.)              |
+|   - Atomic Transactions, Batch Operations & Quota Monitoring                      |
++----------------------------------------+------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                             Virtual File System (VFS)                             |
+|   - Hierarchical Unix-style Directory Tree & Path Normalization                   |
+|   - Strict Root Sandboxing (`/` is root, no traversal escapes)                    |
+|   - Fast In-Memory Tree Index (Lookup by Path, ID, Parent ID)                     |
+|   - Storage Partitioning (Metadata in `vfs_meta`, Content in `vfs_content`)       |
+|   - File & Directory CRUD, Rename, Move, Recursive Copy, Delete                   |
+|   - File Watcher Subscriptions & Reactive System Event Bus Dispatch               |
+|   - Search Engine (Name queries, extension, type, path prefix filtering)          |
++-----------------------------------------------------------------------------------+
+```
+
+## Team Responsibilities
+
 - **Member 1**: Desktop Environment & UI System (Desktop Shell, Window Manager, Taskbar, Start Menu, Application Launcher, UI Component Library, Theme Engine)
-- **Member 2**: OS Core & Kernel Services (Process tree, File system, IPC, Event bus)
-- **Member 3**: Applications & Ecosystem (Terminal, File Manager, Browser, Text Editor, Settings)
-- **Member 4**: Backend & Cloud Sync (User authentication, Remote persistence, Sync)
-
-## Phase 2 Capabilities (Window Manager & Desktop Navigation)
-- **Full Window Manager**: Pointer dragging, 8-direction resizing, boundary constraints, quarter/half snap zones, live snap preview, fullscreen mode, z-index elevation, and geometry restoration.
-- **Start Menu**: User profile section, live fuzzy search, pinned apps grid, all-apps categorized list, recent items, and power action controls.
-- **Launchpad / Application Launcher**: Fullscreen application launcher with category filters (`All`, `Favorites`, `System`, `Productivity`, `Development`, `Utilities`) and Grid/List view switchers.
-- **Taskbar with App Grouping**: Application grouping by ID with count badges, running pills, and right-click context menu (`Open`, `New Window`, `Pin/Unpin`, `Close`, `Close All`).
-- **Global Keyboard Shortcuts**: `Alt+Tab` task switcher, `Alt+F4` close window, `Win+D` show desktop, and `Win+Arrows` window tile snapping.
-- **Testing**: 11 test suites with 44 unit & integration tests (`npm run test`).
+- **Member 2**: OS Core & Kernel Services (Kernel, Event Bus, Storage Engine, Virtual File System)
+- **Member 3**: Built-in Applications & Productivity Suite (File Manager, Text Editor, Notes, Document Editor)
+- **Member 4**: Backend & Cloud Sync
 
 ## Getting Started
 
@@ -30,7 +66,12 @@ npm run dev
 
 ### Run Tests
 ```bash
-npm run test
+npm test
+```
+
+### Run Typecheck
+```bash
+npm run typecheck
 ```
 
 ### Build Production Bundle
