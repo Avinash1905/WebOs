@@ -1,15 +1,23 @@
 /**
- * WebOS Master Applications Catalog Index
+ * WebOS Master Applications Catalog
  */
 
-export { TerminalApp } from './terminal/TerminalApp';
-export { FileExplorerApp } from './file-explorer/FileExplorerApp';
-export { CodeEditorApp } from './code-editor/CodeEditorApp';
-export { CalculatorApp } from './calculator/CalculatorApp';
-export { SystemMonitorApp } from './system-monitor/SystemMonitorApp';
-export { NotesApp } from './notes/NotesApp';
-export { DrawingStudioApp } from './drawing/DrawingStudioApp';
-export { SpreadsheetApp } from './spreadsheet/SpreadsheetApp';
-export { DbStudioApp } from './db-studio/DbStudioApp';
-export { CalendarApp } from './calendar/CalendarApp';
-export { MediaPlayerApp } from './media-player/MediaPlayerApp';
+export * from './terminal/TerminalApp';
+export * from './file-explorer/FileExplorerApp';
+export * from './code-editor/CodeEditorApp';
+export * from './calculator/CalculatorApp';
+export * from './system-monitor/SystemMonitorApp';
+export * from './notes/NotesApp';
+export * from './drawing/DrawingStudioApp';
+export * from './spreadsheet/SpreadsheetApp';
+export * from './db-studio/DbStudioApp';
+export * from './calendar/CalendarApp';
+export * from './media-player/MediaPlayerApp';
+
+export * from './paint/PaintApp';
+export * from './pdf-viewer/PdfViewerApp';
+export * from './video-player/VideoPlayerApp';
+export * from './audio-workstation/AudioWorkstationApp';
+export * from './game-center/GameCenterApp';
+export * from './weather/WeatherApp';
+export * from './clock/ClockApp';

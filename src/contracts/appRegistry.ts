@@ -15,6 +15,10 @@ import {
   Database,
   Calendar as CalendarIcon,
   Music,
+  Film,
+  Gamepad2,
+  Sun,
+  Clock as ClockIcon,
 } from 'lucide-react';
 import type { WindowBounds } from '../types/window';
 
@@ -29,12 +33,19 @@ import { SpreadsheetApp } from '../../applications/spreadsheet/SpreadsheetApp';
 import { DbStudioApp } from '../../applications/db-studio/DbStudioApp';
 import { CalendarApp } from '../../applications/calendar/CalendarApp';
 import { MediaPlayerApp } from '../../applications/media-player/MediaPlayerApp';
+import { PaintApp } from '../../applications/paint/PaintApp';
+import { PdfViewerApp } from '../../applications/pdf-viewer/PdfViewerApp';
+import { VideoPlayerApp } from '../../applications/video-player/VideoPlayerApp';
+import { AudioWorkstationApp } from '../../applications/audio-workstation/AudioWorkstationApp';
+import { GameCenterApp } from '../../applications/game-center/GameCenterApp';
+import { WeatherApp } from '../../applications/weather/WeatherApp';
+import { ClockApp } from '../../applications/clock/ClockApp';
 import { SettingsApp } from '../shell/settings/SettingsApp';
 
 export interface AppDefinition {
   id: string;
   name: string;
-  category: 'System' | 'Utilities' | 'Productivity' | 'Entertainment' | 'Development';
+  category: 'System' | 'Utilities' | 'Productivity' | 'Entertainment' | 'Development' | 'Creative';
   icon: LucideIcon | string | React.ReactNode;
   iconColor?: string;
   description?: string;
@@ -263,6 +274,111 @@ export const BUILTIN_APPLICATIONS: AppDefinition[] = [
     isPinnedToTaskbar: true,
     isFavorite: true,
     component: SettingsApp,
+  },
+  {
+    id: 'paint',
+    name: 'Paint Studio',
+    category: 'Creative',
+    icon: PenTool,
+    iconColor: '#38bdf8',
+    description: 'Layered raster graphics painting studio with filters and image export.',
+    version: '2.0.0',
+    keywords: ['paint', 'art', 'draw', 'raster', 'brush', 'photo'],
+    defaultBounds: { width: 920, height: 600 },
+    showOnDesktop: true,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: PaintApp,
+  },
+  {
+    id: 'pdf-viewer',
+    name: 'Document Reader',
+    category: 'Productivity',
+    icon: FileText,
+    iconColor: '#f87171',
+    description: 'PDF and rich text document inspector with full-text search and bookmarks.',
+    version: '2.0.0',
+    keywords: ['pdf', 'doc', 'reader', 'document', 'viewer', 'books'],
+    defaultBounds: { width: 880, height: 580 },
+    showOnDesktop: false,
+    isPinnedToTaskbar: false,
+    isFavorite: false,
+    component: PdfViewerApp,
+  },
+  {
+    id: 'video-player',
+    name: 'Cinema Video',
+    category: 'Entertainment',
+    icon: Film,
+    iconColor: '#fb923c',
+    description: 'High-definition video playback engine with seek scrubbing and speed controls.',
+    version: '2.0.0',
+    keywords: ['video', 'movie', 'film', 'clip', 'cinema', 'player'],
+    defaultBounds: { width: 800, height: 520 },
+    showOnDesktop: false,
+    isPinnedToTaskbar: false,
+    isFavorite: false,
+    component: VideoPlayerApp,
+  },
+  {
+    id: 'daw',
+    name: 'Audio Workstation',
+    category: 'Creative',
+    icon: Music,
+    iconColor: '#a855f7',
+    description: '16-step beat sequencer and analog synthesizer filter rack.',
+    version: '2.0.0',
+    keywords: ['daw', 'music', 'synth', 'beat', 'drums', 'audio', 'sequencer'],
+    defaultBounds: { width: 860, height: 540 },
+    showOnDesktop: false,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: AudioWorkstationApp,
+  },
+  {
+    id: 'games',
+    name: 'Game Center',
+    category: 'Entertainment',
+    icon: Gamepad2,
+    iconColor: '#eab308',
+    description: 'Classic arcade gaming suite with Minesweeper, 2048, and Snake.',
+    version: '2.0.0',
+    keywords: ['game', 'arcade', 'minesweeper', '2048', 'snake', 'play'],
+    defaultBounds: { width: 780, height: 500 },
+    showOnDesktop: true,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: GameCenterApp,
+  },
+  {
+    id: 'weather',
+    name: 'Weather',
+    category: 'Utilities',
+    icon: Sun,
+    iconColor: '#38bdf8',
+    description: 'Live atmospheric weather forecast, humidity, wind, and 7-day outlook.',
+    version: '2.0.0',
+    keywords: ['weather', 'forecast', 'temperature', 'climate', 'sun', 'rain'],
+    defaultBounds: { width: 620, height: 480 },
+    showOnDesktop: false,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: WeatherApp,
+  },
+  {
+    id: 'clock',
+    name: 'Clock & Timer',
+    category: 'Utilities',
+    icon: ClockIcon,
+    iconColor: '#34d399',
+    description: 'Global world timezones, precision stopwatch with laps, and countdown timer.',
+    version: '2.0.0',
+    keywords: ['clock', 'time', 'stopwatch', 'timer', 'alarm', 'timezone'],
+    defaultBounds: { width: 600, height: 440 },
+    showOnDesktop: false,
+    isPinnedToTaskbar: false,
+    isFavorite: false,
+    component: ClockApp,
   },
   {
     id: 'recycle-bin',

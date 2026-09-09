@@ -1,0 +1,128 @@
+.weather-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 40%, #0f172a 100%);
+  color: #ffffff;
+  padding: 16px;
+  overflow-y: auto;
+  gap: 16px;
+}
+
+.weather-header {
+  display: flex;
+}
+
+.weather-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  width: 100%;
+}
+
+.weather-search input {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  outline: none;
+  font-size: 12px;
+  width: 100%;
+}
+
+.weather-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0;
+}
+
+.weather-sun-icon {
+  color: #facc15;
+  filter: drop-shadow(0 0 16px rgba(250, 204, 21, 0.6));
+}
+
+.weather-temp-main {
+  font-size: 48px;
+  font-weight: 800;
+}
+
+.weather-condition-txt {
+  font-size: 14px;
+  color: #e0f2fe;
+}
+
+.weather-city-txt {
+  font-size: 12px;
+  color: #bae6fd;
+}
+
+.weather-details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.weather-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-lbl {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.stat-val {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.weather-forecast-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.forecast-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 10px 6px;
+  border-radius: 8px;
+  min-width: 50px;
+}
+
+.f-day {
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.f-high {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.f-low {
+  font-size: 11px;
+  color: #94a3b8;
+}
