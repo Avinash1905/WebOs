@@ -1,0 +1,109 @@
+.os-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--os-space-2);
+  font-weight: 500;
+  border-radius: var(--os-radius-sm);
+  transition: all var(--os-transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+/* Sizes */
+.os-button--sm {
+  height: 28px;
+  padding: 0 var(--os-space-3);
+  font-size: 0.8125rem;
+}
+
+.os-button--md {
+  height: 36px;
+  padding: 0 var(--os-space-4);
+  font-size: 0.875rem;
+}
+
+.os-button--lg {
+  height: 44px;
+  padding: 0 var(--os-space-5);
+  font-size: 1rem;
+}
+
+/* Variants */
+.os-button--primary {
+  background-color: var(--os-color-brand);
+  color: #ffffff;
+  box-shadow: 0 2px 10px var(--os-color-brand-glow);
+}
+
+.os-button--primary:hover:not(:disabled) {
+  background-color: var(--os-color-brand-hover);
+  transform: translateY(-1px);
+}
+
+.os-button--secondary {
+  background: var(--os-surface-elevated);
+  color: var(--os-text-primary);
+  border-color: var(--os-border-default);
+  backdrop-filter: var(--os-blur-subtle);
+}
+
+.os-button--secondary:hover:not(:disabled) {
+  background: var(--os-surface-hover);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.os-button--ghost {
+  background: transparent;
+  color: var(--os-text-primary);
+}
+
+.os-button--ghost:hover:not(:disabled) {
+  background: var(--os-surface-hover);
+}
+
+.os-button--danger {
+  background-color: var(--os-color-danger);
+  color: #ffffff;
+}
+
+.os-button--danger:hover:not(:disabled) {
+  background-color: var(--os-color-danger-hover);
+}
+
+.os-button--outline {
+  background: transparent;
+  color: var(--os-text-primary);
+  border-color: var(--os-border-default);
+}
+
+.os-button--outline:hover:not(:disabled) {
+  background: var(--os-surface-hover);
+  border-color: var(--os-border-focus);
+}
+
+.os-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.os-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.os-button__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: os-spin 0.7s linear infinite;
+}
+
+@keyframes os-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

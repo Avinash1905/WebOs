@@ -1,0 +1,140 @@
+.os-window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--os-surface-base);
+  backdrop-filter: var(--os-blur-heavy);
+  -webkit-backdrop-filter: var(--os-blur-heavy);
+  border: 1px solid var(--os-surface-glass-border);
+  border-radius: var(--os-radius-lg);
+  box-shadow: var(--os-shadow-window);
+  overflow: hidden;
+  transition: box-shadow var(--os-transition-fast), border-color var(--os-transition-fast);
+  pointer-events: auto;
+}
+
+.os-window--focused {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: var(--os-shadow-window-focused);
+}
+
+.os-window--maximized {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+/* TitleBar */
+.os-window-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  padding: 0 var(--os-space-2) 0 var(--os-space-3);
+  background: rgba(15, 23, 42, 0.45);
+  border-bottom: 1px solid var(--os-border-subtle);
+  user-select: none;
+}
+
+.os-window-titlebar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--os-space-2);
+  min-width: 0;
+}
+
+.os-window-titlebar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.os-window-titlebar__title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--os-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.os-window-titlebar__controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.os-window-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 24px;
+  border-radius: var(--os-radius-xs);
+  color: var(--os-text-secondary);
+  transition: all var(--os-transition-fast);
+}
+
+.os-window-control:hover {
+  background: var(--os-surface-hover);
+  color: var(--os-text-primary);
+}
+
+.os-window-control--close:hover {
+  background: var(--os-color-danger);
+  color: #ffffff;
+}
+
+/* Content */
+.os-window-content {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  outline: none;
+  background: var(--os-surface-solid);
+}
+
+.os-window__default-content {
+  padding: var(--os-space-6);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.os-window__placeholder-card {
+  max-width: 440px;
+  width: 100%;
+  padding: var(--os-space-6);
+  border-radius: var(--os-radius-md);
+  background: var(--os-surface-elevated);
+  border: 1px solid var(--os-border-default);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--os-space-3);
+}
+
+.os-window__placeholder-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--os-text-primary);
+}
+
+.os-window__placeholder-card p {
+  font-size: 0.875rem;
+  color: var(--os-text-secondary);
+  line-height: 1.5;
+}
+
+.os-window__app-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: var(--os-radius-sm);
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--os-color-brand);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
