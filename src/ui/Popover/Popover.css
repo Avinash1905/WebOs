@@ -1,0 +1,50 @@
+.os-popover {
+  position: absolute;
+  z-index: var(--os-z-system-tray-popover);
+  background: var(--os-surface-elevated);
+  backdrop-filter: var(--os-blur-heavy);
+  -webkit-backdrop-filter: var(--os-blur-heavy);
+  border: 1px solid var(--os-surface-glass-border);
+  border-radius: var(--os-radius-xl);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  animation: os-popover-in 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  user-select: none;
+}
+
+.os-popover--top-right {
+  bottom: calc(var(--os-taskbar-height) + 10px);
+  right: 12px;
+}
+
+.os-popover--top-left {
+  bottom: calc(var(--os-taskbar-height) + 10px);
+  left: 12px;
+}
+
+.os-popover--bottom-right {
+  top: calc(var(--os-taskbar-height) + 10px);
+  right: 12px;
+}
+
+.os-popover--bottom-left {
+  top: calc(var(--os-taskbar-height) + 10px);
+  left: 12px;
+}
+
+.os-popover--center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes os-popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

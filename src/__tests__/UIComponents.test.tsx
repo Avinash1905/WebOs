@@ -6,6 +6,11 @@ import { Badge } from '../ui/Badge/Badge';
 import { Input } from '../ui/Input/Input';
 import { Panel } from '../ui/Panel/Panel';
 import { ContextMenu } from '../ui/ContextMenu/ContextMenu';
+import { Toggle } from '../ui/Toggle/Toggle';
+import { Slider } from '../ui/Slider/Slider';
+import { SegmentedControl } from '../ui/SegmentedControl/SegmentedControl';
+import { EmptyState } from '../ui/EmptyState/EmptyState';
+import { Popover } from '../ui/Popover/Popover';
 
 describe('Shared UI Components', () => {
   it('renders Button and triggers click', () => {
@@ -63,5 +68,65 @@ describe('Shared UI Components', () => {
 
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(handleClose).toHaveBeenCalled();
+  });
+
+  it('renders Toggle and triggers onChange', () => {
+    const handleToggle = vi.fn();
+    render(<Toggle checked={false} onChange={handleToggle} label="Dark Mode" />);
+
+    const toggleBtn = screen.getByRole('switch', { name: 'Dark Mode' });
+    expect(toggleBtn).toBeInTheDocument();
+    fireEvent.click(toggleBtn);
+    expect(handleToggle).toHaveBeenCalledWith(true);
+  });
+
+  it('renders Slider and updates value', () => {
+    const handleSlider = vi.fn();
+    render(<Slider min={0} max={100} value={50} onChange={handleSlider} aria-label="Volume" />);
+
+    const sliderInput = screen.getByRole('slider', { name: 'Volume' });
+    expect(sliderInput).toBeInTheDocument();
+    fireEvent.change(sliderInput, { target: { value: '80' } });
+    expect(handleSlider).toHaveBeenCalledWith(80);
+  });
+
+  it('renders SegmentedControl and switches active segment', () => {
+    const handleSelect = vi.fn();
+    render(
+      <SegmentedControl
+        options={[
+          { id: 'grid', label: 'Grid' },
+          { id: 'list', label: 'List' },
+        ]}
+        value="grid"
+        onChange={handleSelect}
+      />
+    );
+
+    const listOption = screen.getByText('List');
+    fireEvent.click(listOption);
+    expect(handleSelect).toHaveBeenCalledWith('list');
+  });
+
+  it('renders EmptyState with title and description', () => {
+    render(
+      <EmptyState
+        title="No Items"
+        description="Nothing to display here"
+      />
+    );
+
+    expect(screen.getByText('No Items')).toBeInTheDocument();
+    expect(screen.getByText('Nothing to display here')).toBeInTheDocument();
+  });
+
+  it('renders Popover when isOpen is true', () => {
+    render(
+      <Popover isOpen={true} onClose={vi.fn()}>
+        <div>Popover Body</div>
+      </Popover>
+    );
+
+    expect(screen.getByText('Popover Body')).toBeInTheDocument();
   });
 });

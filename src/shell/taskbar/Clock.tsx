@@ -4,9 +4,10 @@ import { Tooltip } from '../../ui/Tooltip/Tooltip';
 export interface ClockProps {
   showSeconds?: boolean;
   className?: string;
+  onClick?: () => void;
 }
 
-export const Clock: React.FC<ClockProps> = ({ showSeconds = false, className }) => {
+export const Clock: React.FC<ClockProps> = ({ showSeconds = false, className, onClick }) => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -38,9 +39,11 @@ export const Clock: React.FC<ClockProps> = ({ showSeconds = false, className }) 
     <Tooltip content={fullDateTooltip} position="top">
       <div
         className={`os-clock ${className || ''}`}
-        role="timer"
+        role="button"
+        tabIndex={0}
         aria-label={`Current time: ${timeString}, ${dateString}`}
         data-testid="taskbar-clock"
+        onClick={onClick}
       >
         <span className="os-clock__time">{timeString}</span>
         <span className="os-clock__date">{dateString}</span>

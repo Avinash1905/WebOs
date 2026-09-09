@@ -3,6 +3,10 @@ import { useWindowStore } from '../stores/windowStore';
 import { useStartMenuStore } from '../stores/startMenuStore';
 import { useLauncherStore } from '../stores/launcherStore';
 import { useDesktopStore } from '../stores/desktopStore';
+import { useSearchStore } from '../stores/searchStore';
+import { useQuickSettingsStore } from '../stores/quickSettingsStore';
+import { useNotificationStore } from '../stores/notificationStore';
+import { useOverlayStore } from '../stores/overlayStore';
 
 export const useWindowShortcuts = () => {
   const isAltDownRef = useRef(false);
@@ -26,13 +30,44 @@ export const useWindowShortcuts = () => {
       const { closeStartMenu, isOpen: isStartOpen } = useStartMenuStore.getState();
       const { closeLauncher, isOpen: isLauncherOpen } = useLauncherStore.getState();
       const { closeContextMenu } = useDesktopStore.getState();
+      const { toggleSearch, isOpen: isSearchOpen, closeSearch } = useSearchStore.getState();
+      const { toggleQuickSettings, isOpen: isQuickOpen, closeQuickSettings } = useQuickSettingsStore.getState();
+      const { toggleNotificationCenter, isCenterOpen: isNotifOpen, closeNotificationCenter } = useNotificationStore.getState();
+      const { dismissTopOverlay } = useOverlayStore.getState();
 
-      // Escape key: dismiss modals/menus
+      // Hierarchical Escape dismissal
       if (e.key === 'Escape') {
-        if (isStartOpen) closeStartMenu();
-        if (isLauncherOpen) closeLauncher();
-        closeContextMenu();
+        const handledByStack = dismissTopOverlay();
+        if (!handledByStack) {
+          if (isSearchOpen) closeSearch();
+          else if (isQuickOpen) closeQuickSettings();
+          else if (isNotifOpen) closeNotificationCenter();
+          else if (isStartOpen) closeStartMenu();
+          else if (isLauncherOpen) closeLauncher();
+          else closeContextMenu();
+        }
         if (isAltTabOpen) setAltTabOpen(false);
+        return;
+      }
+
+      // Spotlight Global Search shortcut (Ctrl + Space or Win + S)
+      if ((e.ctrlKey && e.code === 'Space') || ((e.metaKey || (e.altKey && !e.ctrlKey)) && (e.key === 's' || e.key === 'S'))) {
+        e.preventDefault();
+        toggleSearch();
+        return;
+      }
+
+      // Quick Settings shortcut (Win + A or Ctrl + Shift + A)
+      if ((e.metaKey && (e.key === 'a' || e.key === 'A')) || (e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A'))) {
+        e.preventDefault();
+        toggleQuickSettings();
+        return;
+      }
+
+      // Notification Center shortcut (Win + N or Ctrl + Shift + N)
+      if ((e.metaKey && (e.key === 'n' || e.key === 'N')) || (e.ctrlKey && e.shiftKey && (e.key === 'n' || e.key === 'N'))) {
+        e.preventDefault();
+        toggleNotificationCenter();
         return;
       }
 

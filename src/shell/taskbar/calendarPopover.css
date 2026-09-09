@@ -1,0 +1,121 @@
+.os-calendar-popover {
+  position: fixed;
+  bottom: 56px;
+  right: 12px;
+  width: 320px;
+  background: var(--os-surface-glass);
+  backdrop-filter: blur(var(--os-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--os-blur-heavy));
+  border: 1px solid var(--os-border-glass);
+  border-radius: var(--os-radius-xl, 16px);
+  box-shadow: var(--os-shadow-2xl);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+  animation: os-cal-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+@keyframes os-cal-slide-up {
+  from {
+    transform: translateY(16px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.os-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--os-border-glass);
+}
+
+.os-cal-month-year {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--os-text-primary);
+}
+
+.os-cal-nav-btn {
+  background: transparent;
+  border: none;
+  color: var(--os-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.os-cal-nav-btn:hover {
+  background: var(--os-surface-hover);
+  color: var(--os-text-primary);
+}
+
+.os-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--os-text-muted);
+  padding: 4px 0;
+}
+
+.os-cal-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.os-cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--os-text-secondary);
+  transition: all 0.15s;
+}
+
+.os-cal-day:hover {
+  background: var(--os-surface-hover);
+  color: var(--os-text-primary);
+}
+
+.os-cal-day.other-month {
+  opacity: 0.3;
+}
+
+.os-cal-day.today {
+  background: var(--os-color-brand, #3b82f6);
+  color: #fff;
+  font-weight: 700;
+}
+
+.os-cal-day.selected:not(.today) {
+  border: 1px solid var(--os-color-brand, #3b82f6);
+  color: var(--os-text-primary);
+}
+
+.os-cal-footer {
+  padding-top: 8px;
+  border-top: 1px solid var(--os-border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--os-text-muted);
+}

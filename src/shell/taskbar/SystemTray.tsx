@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import { Wifi, Volume2, VolumeX, BatteryCharging, Bell } from 'lucide-react';
+import { Wifi, WifiOff, Volume2, VolumeX, BatteryCharging, Bell } from 'lucide-react';
 import { Tooltip } from '../../ui/Tooltip/Tooltip';
 import { Badge } from '../../ui/Badge/Badge';
 import { Clock } from './Clock';
-import { useTaskbarStore } from '../../stores/taskbarStore';
+import { CalendarPopover } from './CalendarPopover';
+import { useQuickSettingsStore } from '../../stores/quickSettingsStore';
+import { useNotificationStore } from '../../stores/notificationStore';
 
 export interface SystemTrayProps {
   className?: string;
 }
 
 export const SystemTray: React.FC<SystemTrayProps> = ({ className }) => {
-  const { activeTrayMenu, setActiveTrayMenu } = useTaskbarStore();
-  const [isMuted, setIsMuted] = useState(false);
-  const [wifiConnected] = useState(true);
-  const [batteryLevel] = useState(94);
-  const [unreadNotifications] = useState(1);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  // Quick Settings Store
+  const wifiEnabled = useQuickSettingsStore((state) => state.wifiEnabled);
+  const volume = useQuickSettingsStore((state) => state.volume);
+  const isMuted = useQuickSettingsStore((state) => state.isMuted);
+  const toggleQuickSettings = useQuickSettingsStore((state) => state.toggleQuickSettings);
+
+  // Notification Store
+  const unreadCount = useNotificationStore((state) => state.unreadCount);
+  const toggleNotificationCenter = useNotificationStore((state) => state.toggleNotificationCenter);
 
   return (
     <div
@@ -24,56 +32,68 @@ export const SystemTray: React.FC<SystemTrayProps> = ({ className }) => {
       data-testid="system-tray"
     >
       {/* Network Indicator */}
-      <Tooltip content={wifiConnected ? 'Wi-Fi: Connected (High Speed)' : 'Wi-Fi: Disconnected'} position="top">
+      <Tooltip content={wifiEnabled ? 'Wi-Fi: Connected' : 'Wi-Fi: Disconnected'} position="top">
         <button
           type="button"
           aria-label="Network Status"
           className="os-system-tray__item"
           data-testid="tray-network"
-          onClick={() => setActiveTrayMenu(activeTrayMenu === 'network' ? null : 'network')}
+          data-tray-button="quicksettings"
+          onClick={toggleQuickSettings}
         >
-          <Wifi size={16} className={wifiConnected ? 'text-emerald-400' : 'text-slate-500'} />
+          {wifiEnabled ? (
+            <Wifi size={16} className="text-emerald-400" />
+          ) : (
+            <WifiOff size={16} className="text-slate-500" />
+          )}
         </button>
       </Tooltip>
 
       {/* Audio Indicator */}
-      <Tooltip content={isMuted ? 'Volume: Muted' : 'Volume: 80%'} position="top">
+      <Tooltip content={isMuted ? 'Volume: Muted' : `Volume: ${volume}%`} position="top">
         <button
           type="button"
           aria-label="Audio Volume"
           className="os-system-tray__item"
           data-testid="tray-volume"
-          onClick={() => setIsMuted((prev) => !prev)}
+          data-tray-button="quicksettings"
+          onClick={toggleQuickSettings}
         >
-          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+          {isMuted || volume === 0 ? <VolumeX size={16} /> : <Volume2 size={16} />}
         </button>
       </Tooltip>
 
       {/* Battery Indicator */}
-      <Tooltip content={`Battery: ${batteryLevel}% (Charging)`} position="top">
+      <Tooltip content="Battery: 96% (Plugged in)" position="top">
         <button
           type="button"
           aria-label="Battery Status"
           className="os-system-tray__item"
           data-testid="tray-battery"
+          data-tray-button="quicksettings"
+          onClick={toggleQuickSettings}
         >
           <BatteryCharging size={16} />
         </button>
       </Tooltip>
 
       {/* Notifications Indicator */}
-      <Tooltip content={unreadNotifications > 0 ? `${unreadNotifications} Unread Notification` : 'No Notifications'} position="top">
+      <Tooltip
+        content={unreadCount > 0 ? `${unreadCount} Unread Notifications` : 'No New Notifications'}
+        position="top"
+      >
         <button
           type="button"
           aria-label="Notification Center"
           className="os-system-tray__item os-system-tray__item--notif"
           data-testid="tray-notifications"
-          onClick={() => setActiveTrayMenu(activeTrayMenu === 'notifications' ? null : 'notifications')}
+          data-tray-button="notifications"
+          onClick={toggleNotificationCenter}
         >
           <Bell size={16} />
-          {unreadNotifications > 0 && (
+          {unreadCount > 0 && (
             <Badge size="sm" variant="primary" className="os-system-tray__badge">
-              {unreadNotifications}
+              {unreadCount}
             </Badge>
           )}
         </button>
@@ -81,8 +101,9 @@ export const SystemTray: React.FC<SystemTrayProps> = ({ className }) => {
 
       <div className="os-system-tray__divider" />
 
-      {/* Clock */}
-      <Clock />
+      {/* Clock & Interactive Calendar */}
+      <Clock onClick={() => setIsCalendarOpen((prev) => !prev)} />
+      <CalendarPopover isOpen={isCalendarOpen} onClose={() => setIsCalendarOpen(false)} />
     </div>
   );
 };
