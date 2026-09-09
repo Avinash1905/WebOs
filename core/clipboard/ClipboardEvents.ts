@@ -1,0 +1,13 @@
+/**
+ * @file ClipboardEvents.ts
+ * @description Event constants and helpers for WebOS Clipboard operations.
+ */
+
+export const CLIPBOARD_EVENTS = {
+  CLIPBOARD_CHANGED: 'CLIPBOARD_CHANGED',
+  CLIPBOARD_CLEARED: 'CLIPBOARD_CLEARED',
+  CLIPBOARD_COPIED: 'CLIPBOARD_COPIED',
+  CLIPBOARD_CUT: 'CLIPBOARD_CUT',
+  CLIPBOARD_PASTED: 'CLIPBOARD_PASTED',
+  CLIPBOARD_ERROR: 'CLIPBOARD_ERROR',
+} as const;

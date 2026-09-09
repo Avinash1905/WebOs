@@ -5,9 +5,23 @@
 
 import type {
   AppClosedPayload,
+  AppCrashedPayload,
   AppErrorPayload,
+  AppLaunchingPayload,
   AppOpenedPayload,
+  AppPausedPayload,
   AppRegisteredPayload,
+  AppResumedPayload,
+  AppStartedPayload,
+  AppStoppedPayload,
+  AppStoppingPayload,
+  AppUnregisteredPayload,
+  ClipboardChangedPayload,
+  ClipboardClearedPayload,
+  ClipboardCopiedPayload,
+  ClipboardCutPayload,
+  ClipboardErrorPayload,
+  ClipboardPastedPayload,
   CommandCompletedPayload,
   CommandFailedPayload,
   CommandStartedPayload,
@@ -38,6 +52,11 @@ import type {
   ProcessTerminatedPayload,
   SchedulerErrorPayload,
   SchedulerLifecyclePayload,
+  SearchCompletedPayload,
+  SearchFailedPayload,
+  SearchIndexRebuiltPayload,
+  SearchIndexUpdatedPayload,
+  SearchStartedPayload,
   SecurityViolationPayload,
   SessionEndedPayload,
   SessionStartedPayload,
@@ -94,8 +113,16 @@ export interface SystemEventMap {
 
   // Application
   APP_REGISTERED: AppRegisteredPayload;
+  APP_UNREGISTERED: AppUnregisteredPayload;
+  APP_LAUNCHING: AppLaunchingPayload;
+  APP_STARTED: AppStartedPayload;
   APP_OPENED: AppOpenedPayload;
+  APP_PAUSED: AppPausedPayload;
+  APP_RESUMED: AppResumedPayload;
+  APP_STOPPING: AppStoppingPayload;
+  APP_STOPPED: AppStoppedPayload;
   APP_CLOSED: AppClosedPayload;
+  APP_CRASHED: AppCrashedPayload;
   APP_ERROR: AppErrorPayload;
 
   // User & Session
@@ -138,6 +165,21 @@ export interface SystemEventMap {
   COMMAND_STARTED: CommandStartedPayload;
   COMMAND_COMPLETED: CommandCompletedPayload;
   COMMAND_FAILED: CommandFailedPayload;
+
+  // Search
+  SEARCH_STARTED: SearchStartedPayload;
+  SEARCH_COMPLETED: SearchCompletedPayload;
+  SEARCH_FAILED: SearchFailedPayload;
+  SEARCH_INDEX_UPDATED: SearchIndexUpdatedPayload;
+  SEARCH_INDEX_REBUILT: SearchIndexRebuiltPayload;
+
+  // Clipboard
+  CLIPBOARD_CHANGED: ClipboardChangedPayload;
+  CLIPBOARD_CLEARED: ClipboardClearedPayload;
+  CLIPBOARD_COPIED: ClipboardCopiedPayload;
+  CLIPBOARD_CUT: ClipboardCutPayload;
+  CLIPBOARD_PASTED: ClipboardPastedPayload;
+  CLIPBOARD_ERROR: ClipboardErrorPayload;
 }
 
 /**

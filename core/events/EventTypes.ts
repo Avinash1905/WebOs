@@ -60,8 +60,16 @@ export type ProcessEventType =
 // ==========================================
 export const APPLICATION_EVENTS = {
   APP_REGISTERED: 'APP_REGISTERED',
+  APP_UNREGISTERED: 'APP_UNREGISTERED',
+  APP_LAUNCHING: 'APP_LAUNCHING',
+  APP_STARTED: 'APP_STARTED',
   APP_OPENED: 'APP_OPENED',
+  APP_PAUSED: 'APP_PAUSED',
+  APP_RESUMED: 'APP_RESUMED',
+  APP_STOPPING: 'APP_STOPPING',
+  APP_STOPPED: 'APP_STOPPED',
   APP_CLOSED: 'APP_CLOSED',
+  APP_CRASHED: 'APP_CRASHED',
   APP_ERROR: 'APP_ERROR',
 } as const;
 
@@ -96,7 +104,6 @@ export const STORAGE_EVENTS = {
 export type StorageEventType =
   (typeof STORAGE_EVENTS)[keyof typeof STORAGE_EVENTS];
 
-// ==========================================
 // ==========================================
 // 7. Security & Permission Events
 // ==========================================
@@ -145,6 +152,35 @@ export type ShellEventType =
   (typeof SHELL_EVENTS)[keyof typeof SHELL_EVENTS];
 
 // ==========================================
+// 10. Search Events
+// ==========================================
+export const SEARCH_EVENTS = {
+  SEARCH_STARTED: 'SEARCH_STARTED',
+  SEARCH_COMPLETED: 'SEARCH_COMPLETED',
+  SEARCH_FAILED: 'SEARCH_FAILED',
+  SEARCH_INDEX_UPDATED: 'SEARCH_INDEX_UPDATED',
+  SEARCH_INDEX_REBUILT: 'SEARCH_INDEX_REBUILT',
+} as const;
+
+export type SearchEventType =
+  (typeof SEARCH_EVENTS)[keyof typeof SEARCH_EVENTS];
+
+// ==========================================
+// 11. Clipboard Events
+// ==========================================
+export const CLIPBOARD_EVENTS = {
+  CLIPBOARD_CHANGED: 'CLIPBOARD_CHANGED',
+  CLIPBOARD_CLEARED: 'CLIPBOARD_CLEARED',
+  CLIPBOARD_COPIED: 'CLIPBOARD_COPIED',
+  CLIPBOARD_CUT: 'CLIPBOARD_CUT',
+  CLIPBOARD_PASTED: 'CLIPBOARD_PASTED',
+  CLIPBOARD_ERROR: 'CLIPBOARD_ERROR',
+} as const;
+
+export type ClipboardEventType =
+  (typeof CLIPBOARD_EVENTS)[keyof typeof CLIPBOARD_EVENTS];
+
+// ==========================================
 // Combined All System Event Types
 // ==========================================
 export const SYSTEM_EVENT_TYPES = {
@@ -157,6 +193,8 @@ export const SYSTEM_EVENT_TYPES = {
   ...SECURITY_EVENTS,
   ...SCHEDULER_EVENTS,
   ...SHELL_EVENTS,
+  ...SEARCH_EVENTS,
+  ...CLIPBOARD_EVENTS,
 } as const;
 
 export type SystemEventType =
@@ -168,5 +206,7 @@ export type SystemEventType =
   | StorageEventType
   | SecurityEventType
   | SchedulerEventType
-  | ShellEventType;
+  | ShellEventType
+  | SearchEventType
+  | ClipboardEventType;
 

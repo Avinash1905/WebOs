@@ -129,15 +129,61 @@ export interface AppRegisteredPayload {
   readonly version?: string;
 }
 
+export interface AppUnregisteredPayload {
+  readonly appId: string;
+}
+
+export interface AppLaunchingPayload {
+  readonly appId: string;
+  readonly instanceId: string;
+  readonly userId?: string;
+  readonly pid?: number;
+}
+
+export interface AppStartedPayload {
+  readonly appId: string;
+  readonly instanceId: string;
+  readonly pid: number;
+  readonly userId?: string;
+}
+
 export interface AppOpenedPayload {
   readonly appId: string;
   readonly instanceId: string;
   readonly windowId?: string;
 }
 
+export interface AppPausedPayload {
+  readonly appId: string;
+  readonly instanceId: string;
+}
+
+export interface AppResumedPayload {
+  readonly appId: string;
+  readonly instanceId: string;
+}
+
+export interface AppStoppingPayload {
+  readonly appId: string;
+  readonly instanceId: string;
+}
+
+export interface AppStoppedPayload {
+  readonly appId: string;
+  readonly instanceId: string;
+  readonly exitCode?: number;
+}
+
 export interface AppClosedPayload {
   readonly appId: string;
   readonly instanceId: string;
+  readonly exitCode?: number;
+}
+
+export interface AppCrashedPayload {
+  readonly appId: string;
+  readonly instanceId: string;
+  readonly error: Error | string;
   readonly exitCode?: number;
 }
 
@@ -316,5 +362,80 @@ export interface CommandFailedPayload {
   readonly command: string;
   readonly error: string;
   readonly exitCode: number;
+}
+
+// ==========================================
+// 10. Search Payloads
+// ==========================================
+export interface SearchStartedPayload {
+  readonly searchId: string;
+  readonly query: string;
+  readonly rootPath?: string;
+  readonly userId?: string;
+}
+
+export interface SearchCompletedPayload {
+  readonly searchId: string;
+  readonly query: string;
+  readonly matchCount: number;
+  readonly durationMs: number;
+}
+
+export interface SearchFailedPayload {
+  readonly searchId: string;
+  readonly query: string;
+  readonly error: string;
+}
+
+export interface SearchIndexUpdatedPayload {
+  readonly path: string;
+  readonly action: 'add' | 'update' | 'remove';
+  readonly indexedCount: number;
+}
+
+export interface SearchIndexRebuiltPayload {
+  readonly totalIndexed: number;
+  readonly durationMs: number;
+}
+
+// ==========================================
+// 11. Clipboard Payloads
+// ==========================================
+export interface ClipboardChangedPayload {
+  readonly type: string;
+  readonly sourceApp?: string;
+  readonly userId?: string;
+  readonly timestamp: number;
+}
+
+export interface ClipboardClearedPayload {
+  readonly timestamp: number;
+  readonly userId?: string;
+}
+
+export interface ClipboardCopiedPayload {
+  readonly type: string;
+  readonly itemsCount?: number;
+  readonly sourcePath?: string;
+  readonly sourceApp?: string;
+}
+
+export interface ClipboardCutPayload {
+  readonly type: string;
+  readonly itemsCount?: number;
+  readonly sourcePath?: string;
+  readonly sourceApp?: string;
+}
+
+export interface ClipboardPastedPayload {
+  readonly type: string;
+  readonly destinationPath?: string;
+  readonly operation: 'copy' | 'cut';
+  readonly targetApp?: string;
+}
+
+export interface ClipboardErrorPayload {
+  readonly operation: string;
+  readonly error: string;
 }
 
