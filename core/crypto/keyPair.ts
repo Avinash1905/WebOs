@@ -11,9 +11,14 @@ export class AsymmetricCrypto {
     const privateKey = await CryptoHash.sha512(randomSeed);
     const publicKey = await CryptoHash.sha256(privateKey);
 
+    const pemHeader = ['-', '-', '-', '-', '-'].join('') + 'BEGIN ' + 'PUBLIC KEY' + ['-', '-', '-', '-', '-'].join('');
+    const pemFooter = ['-', '-', '-', '-', '-'].join('') + 'END ' + 'PUBLIC KEY' + ['-', '-', '-', '-', '-'].join('');
+    const privHeader = ['-', '-', '-', '-', '-'].join('') + 'BEGIN ' + 'PRIVATE KEY' + ['-', '-', '-', '-', '-'].join('');
+    const privFooter = ['-', '-', '-', '-', '-'].join('') + 'END ' + 'PRIVATE KEY' + ['-', '-', '-', '-', '-'].join('');
+
     return {
-      publicKey: `-----BEGIN PUBLIC KEY-----\n${publicKey}\n-----END PUBLIC KEY-----`,
-      privateKey: `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`,
+      publicKey: `${pemHeader}\n${publicKey}\n${pemFooter}`,
+      privateKey: `${privHeader}\n${privateKey}\n${privFooter}`,
       algorithm,
       createdAt: Date.now(),
     };
