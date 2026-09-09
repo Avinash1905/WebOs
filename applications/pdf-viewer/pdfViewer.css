@@ -1,0 +1,38 @@
+.pdf-viewer-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e24;
+  color: #f1f1f1;
+}
+.pdf-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #252530;
+  border-bottom: 1px solid #333342;
+}
+.pdf-nav-controls, .pdf-zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pdf-doc-viewport {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background: #111116;
+}
+.pdf-page-canvas {
+  background: #ffffff;
+  color: #111827;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  max-width: 800px;
+  width: 100%;
+  min-height: 900px;
+  line-height: 1.6;
+}
