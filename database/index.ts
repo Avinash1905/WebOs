@@ -12,3 +12,4 @@ export * from './engine/bTreeIndex';
 export * from './engine/walJournal';
 export * from './engine/mvccManager';
 export * from './seed/seedData';
+export * from './enterprise';

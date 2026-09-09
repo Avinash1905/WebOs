@@ -40,6 +40,11 @@ import { AudioWorkstationApp } from '../../applications/audio-workstation/AudioW
 import { GameCenterApp } from '../../applications/game-center/GameCenterApp';
 import { WeatherApp } from '../../applications/weather/WeatherApp';
 import { ClockApp } from '../../applications/clock/ClockApp';
+import { RestClientApp } from '../../applications/rest-client/RestClientApp';
+import { HexEditorApp } from '../../applications/hex-editor/HexEditorApp';
+import { NetworkSnifferApp } from '../../applications/network-sniffer/NetworkSnifferApp';
+import { MarkdownStudioApp } from '../../applications/markdown-studio/MarkdownStudioApp';
+import { DiagramsApp } from '../../applications/diagrams/DiagramsApp';
 import { SettingsApp } from '../shell/settings/SettingsApp';
 
 export interface AppDefinition {
@@ -394,6 +399,81 @@ export const BUILTIN_APPLICATIONS: AppDefinition[] = [
     isPinnedToTaskbar: false,
     isFavorite: false,
     component: FileExplorerApp,
+  },
+  {
+    id: 'rest-client',
+    name: 'API Workbench',
+    category: 'Development',
+    icon: Activity,
+    iconColor: '#38bdf8',
+    description: 'HTTP & REST API testing client with request builder and live JSON inspector.',
+    version: '2.0.0',
+    keywords: ['api', 'rest', 'http', 'postman', 'fetch', 'curl', 'json'],
+    defaultBounds: { width: 880, height: 560 },
+    showOnDesktop: true,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: RestClientApp,
+  },
+  {
+    id: 'hex-editor',
+    name: 'Hex Inspector',
+    category: 'Development',
+    icon: FileText,
+    iconColor: '#f43f5e',
+    description: 'Low-level binary bytecode and raw hex file viewer and inspector.',
+    version: '2.0.0',
+    keywords: ['hex', 'binary', 'byte', 'editor', 'elf', 'dump'],
+    defaultBounds: { width: 780, height: 480 },
+    showOnDesktop: false,
+    isPinnedToTaskbar: false,
+    isFavorite: false,
+    component: HexEditorApp,
+  },
+  {
+    id: 'sniffer',
+    name: 'Network Sniffer',
+    category: 'Utilities',
+    icon: Activity,
+    iconColor: '#10b981',
+    description: 'Packet capture analyzer and virtual TCP/IP network protocol inspector.',
+    version: '2.0.0',
+    keywords: ['network', 'sniffer', 'wireshark', 'packet', 'tcp', 'ip', 'capture'],
+    defaultBounds: { width: 920, height: 580 },
+    showOnDesktop: false,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: NetworkSnifferApp,
+  },
+  {
+    id: 'markdown-studio',
+    name: 'Markdown Studio',
+    category: 'Productivity',
+    icon: BookOpen,
+    iconColor: '#818cf8',
+    description: 'Real-time side-by-side Markdown document editor and documentation writer.',
+    version: '2.0.0',
+    keywords: ['markdown', 'docs', 'editor', 'preview', 'write', 'wiki'],
+    defaultBounds: { width: 860, height: 540 },
+    showOnDesktop: true,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: MarkdownStudioApp,
+  },
+  {
+    id: 'diagrams',
+    name: 'Diagrams & Flow',
+    category: 'Creative',
+    icon: PenTool,
+    iconColor: '#fbbf24',
+    description: 'Interactive architecture diagrams, system nodes, and flowchart modeling.',
+    version: '2.0.0',
+    keywords: ['diagram', 'flowchart', 'nodes', 'draw', 'architecture', 'schema'],
+    defaultBounds: { width: 880, height: 560 },
+    showOnDesktop: true,
+    isPinnedToTaskbar: false,
+    isFavorite: true,
+    component: DiagramsApp,
   },
 ];
 

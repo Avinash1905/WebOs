@@ -1,0 +1,128 @@
+.rest-client-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e24;
+  color: #f1f1f1;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+.rest-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: #282830;
+  border-bottom: 1px solid #3a3a46;
+}
+.method-select {
+  background: #383844;
+  color: #61afef;
+  font-weight: bold;
+  border: 1px solid #4a4a58;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+.url-input {
+  flex: 1;
+  background: #18181c;
+  color: #fff;
+  border: 1px solid #3a3a46;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+.send-btn {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 6px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.rest-split-pane {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.rest-request-pane, .rest-response-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #3a3a46;
+}
+.rest-tabs {
+  display: flex;
+  background: #23232b;
+  border-bottom: 1px solid #3a3a46;
+}
+.rest-tab-btn {
+  background: transparent;
+  border: none;
+  color: #8b8b9e;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.rest-tab-btn.active {
+  color: #61afef;
+  border-bottom: 2px solid #61afef;
+}
+.rest-tab-content {
+  flex: 1;
+  padding: 10px;
+  overflow: auto;
+}
+.body-editor {
+  width: 100%;
+  height: 100%;
+  background: #18181c;
+  color: #abb2bf;
+  font-family: monospace;
+  border: 1px solid #3a3a46;
+  padding: 8px;
+  border-radius: 4px;
+  resize: none;
+}
+.key-value-editor .kv-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.key-value-editor input {
+  flex: 1;
+  background: #18181c;
+  color: #fff;
+  border: 1px solid #3a3a46;
+  padding: 6px;
+  border-radius: 4px;
+}
+.response-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.response-status-bar {
+  display: flex;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #23232b;
+  border-bottom: 1px solid #3a3a46;
+  font-size: 13px;
+}
+.status-badge { color: #98c379; font-weight: bold; }
+.meta-badge { color: #8b8b9e; }
+.response-body-viewer {
+  flex: 1;
+  margin: 0;
+  padding: 12px;
+  background: #18181c;
+  color: #98c379;
+  overflow: auto;
+  font-family: monospace;
+  font-size: 13px;
+}
+.response-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+}

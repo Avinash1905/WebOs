@@ -1,0 +1,76 @@
+.hex-editor-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #141419;
+  color: #d1d5db;
+  font-family: 'Consolas', monospace;
+}
+.hex-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #1f2029;
+  border-bottom: 1px solid #2d2f3d;
+}
+.hex-file-title { font-size: 13px; font-weight: bold; color: #60a5fa; }
+.hex-btn {
+  background: #374151;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.hex-view-container {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+}
+.hex-row {
+  display: flex;
+  align-items: center;
+  line-height: 22px;
+  font-size: 13px;
+}
+.hex-offset {
+  color: #9ca3af;
+  margin-right: 16px;
+  user-select: none;
+}
+.hex-bytes {
+  display: flex;
+  gap: 8px;
+  margin-right: 24px;
+}
+.hex-byte {
+  padding: 0 2px;
+  cursor: pointer;
+}
+.hex-byte.selected {
+  background: #3b82f6;
+  color: #fff;
+  border-radius: 2px;
+}
+.hex-ascii {
+  display: flex;
+  color: #10b981;
+}
+.hex-ascii-char {
+  padding: 0 1px;
+  cursor: pointer;
+}
+.hex-ascii-char.selected {
+  background: #3b82f6;
+  color: #fff;
+}
+.hex-status-bar {
+  display: flex;
+  gap: 20px;
+  padding: 6px 12px;
+  background: #1f2029;
+  border-top: 1px solid #2d2f3d;
+  font-size: 12px;
+  color: #9ca3af;
+}

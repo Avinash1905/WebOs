@@ -1,0 +1,78 @@
+.sniffer-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #181820;
+  color: #f1f1f1;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+.sniffer-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: #232330;
+  border-bottom: 1px solid #323242;
+}
+.sniffer-filter-input {
+  flex: 1;
+  background: #101016;
+  color: #fff;
+  border: 1px solid #323242;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+.sniffer-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.sniffer-table-container {
+  flex: 1;
+  overflow: auto;
+}
+.sniffer-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.sniffer-table th {
+  background: #20202c;
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid #323242;
+  color: #9ca3af;
+  position: sticky;
+  top: 0;
+}
+.sniffer-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #232330;
+}
+.sniffer-row { cursor: pointer; }
+.sniffer-row:hover { background: #252535; }
+.sniffer-row.selected { background: #3b82f6 !important; color: #fff; }
+.proto-badge {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+}
+.proto-tcp .proto-badge { background: #3b82f6; color: #fff; }
+.proto-udp .proto-badge { background: #8b5cf6; color: #fff; }
+.proto-dns .proto-badge { background: #10b981; color: #fff; }
+.proto-http .proto-badge { background: #f59e0b; color: #fff; }
+.proto-mqtt .proto-badge { background: #ec4899; color: #fff; }
+.sniffer-detail-pane {
+  height: 140px;
+  background: #14141c;
+  border-top: 1px solid #323242;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  overflow: auto;
+}
+.detail-header { font-weight: bold; margin-bottom: 6px; color: #60a5fa; }
+.detail-tree div { line-height: 20px; }

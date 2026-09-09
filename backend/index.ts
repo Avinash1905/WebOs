@@ -14,3 +14,5 @@ export * from './services/analyticsService';
 export * from './services/storeService';
 export * from './services/rbacService';
 export * from './services/notificationPushService';
+export * from './enterprise';
+export * from './security';

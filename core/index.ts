@@ -11,6 +11,14 @@ export * from './crypto';
 export * from './network';
 export * from './package';
 export * from './cron';
+export * from './drivers';
+export * from './vm_runtime';
+export * from './container';
+export * from './physics';
+import * as Compiler from './compiler';
+import * as Graphics from './graphics';
+export { Compiler, Graphics };
+export * from './protocols';
 
 export { vfs, VirtualFileSystem } from './vfs/vfs';
 export { processManager, ProcessManager } from './process/processManager';

@@ -21,3 +21,8 @@ export * from './audio-workstation/AudioWorkstationApp';
 export * from './game-center/GameCenterApp';
 export * from './weather/WeatherApp';
 export * from './clock/ClockApp';
+export * from './rest-client/RestClientApp';
+export * from './hex-editor/HexEditorApp';
+export * from './network-sniffer/NetworkSnifferApp';
+export * from './markdown-studio/MarkdownStudioApp';
+export * from './diagrams/DiagramsApp';
