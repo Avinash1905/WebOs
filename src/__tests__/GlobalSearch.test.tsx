@@ -43,7 +43,7 @@ describe('Global Search & Spotlight Subsystem', () => {
     fireEvent.change(input, { target: { value: 'editor' } });
 
     await waitFor(() => {
-      expect(screen.getByText('Text Editor')).toBeInTheDocument();
+      expect(screen.getByText('Code Editor')).toBeInTheDocument();
     });
   });
 

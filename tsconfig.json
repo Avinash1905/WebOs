@@ -17,8 +17,14 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["core/*"],
+      "@applications/*": ["applications/*"],
+      "@backend/*": ["backend/*"],
+      "@database/*": ["database/*"],
+      "@src/*": ["src/*"]
+    }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "core", "applications", "backend", "database", "scripts", "vite.config.ts"]
 }

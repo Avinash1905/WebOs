@@ -1,0 +1,248 @@
+.calendar-app-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: var(--os-surface-base, #0b101b);
+  color: #f8fafc;
+  font-family: inherit;
+  overflow: hidden;
+}
+
+.calendar-main-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.calendar-month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.month-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.text-pink { color: #f472b6; }
+
+.month-nav-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.cal-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.cal-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.weekdays-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 4px;
+  flex: 1;
+}
+
+.day-cell {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background 0.15s;
+}
+
+.day-cell:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.day-cell.selected {
+  border-color: var(--os-accent-primary, #38bdf8);
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.day-cell.today .day-number {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.day-number {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.event-dot-indicator {
+  font-size: 10px;
+  background: rgba(244, 114, 182, 0.3);
+  color: #f472b6;
+  padding: 1px 4px;
+  border-radius: 4px;
+  text-align: center;
+  align-self: flex-start;
+}
+
+.calendar-schedule-sidebar {
+  width: 280px;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.sidebar-date-heading {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar-date-sub {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.add-event-btn {
+  background: var(--os-accent-primary, #38bdf8);
+  border: none;
+  border-radius: 6px;
+  color: #0f172a;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.add-event-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-input, .event-input-time, .event-select {
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  outline: none;
+}
+
+.add-event-row {
+  display: flex;
+  gap: 6px;
+}
+
+.add-event-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.event-btn {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  border: none;
+}
+
+.event-btn.primary { background: #38bdf8; color: #0f172a; font-weight: 600; }
+.event-btn.secondary { background: rgba(255, 255, 255, 0.1); color: #cbd5e1; }
+
+.events-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #38bdf8;
+}
+
+.event-card.important { border-left-color: #ef4444; }
+.event-card.personal { border-left-color: #10b981; }
+
+.event-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.event-time {
+  font-size: 11px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.del-event-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.del-event-btn:hover {
+  color: #f87171;
+}
+
+.no-events {
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+  padding: 20px 0;
+}

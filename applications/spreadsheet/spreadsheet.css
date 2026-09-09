@@ -1,0 +1,144 @@
+.spreadsheet-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--os-surface-base, #0b101b);
+  color: #f8fafc;
+  font-family: inherit;
+  overflow: hidden;
+}
+
+.sheet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sheet-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.text-emerald {
+  color: #10b981;
+}
+
+.sheet-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.sheet-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.sheet-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sheet-btn.danger {
+  color: #f87171;
+}
+
+.sheet-formula-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.selected-cell-id {
+  font-weight: 700;
+  color: #38bdf8;
+  font-size: 13px;
+  min-width: 32px;
+}
+
+.fx-label {
+  font-style: italic;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.formula-input {
+  flex: 1;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.sheet-grid-wrapper {
+  flex: 1;
+  overflow: auto;
+}
+
+.sheet-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.sheet-table th, .sheet-table td {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0;
+}
+
+.corner-th, .col-header, .row-header {
+  background: rgba(0, 0, 0, 0.4);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  user-select: none;
+}
+
+.col-header {
+  height: 24px;
+  min-width: 90px;
+}
+
+.row-header {
+  width: 36px;
+}
+
+.sheet-cell {
+  background: transparent;
+}
+
+.sheet-cell.active {
+  outline: 2px solid var(--os-accent-primary, #38bdf8);
+  outline-offset: -2px;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.sheet-cell input {
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 12.5px;
+  outline: none;
+}

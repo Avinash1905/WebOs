@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  webos-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webos-platform
+    ports:
+      - "5173:80"
+    environment:
+      - NODE_ENV=production
+      - PORT=80
+      - DATABASE_URL=postgres://webos_admin:webos_secure_password_2026@postgres:5432/webos_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=webos-production-master-secret-key-2026
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: webos-postgres
+    environment:
+      - POSTGRES_USER=webos_admin
+      - POSTGRES_PASSWORD=webos_secure_password_2026
+      - POSTGRES_DB=webos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: webos-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:

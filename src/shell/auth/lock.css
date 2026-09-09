@@ -1,0 +1,124 @@
+.lock-screen-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.85) 0%, rgba(3, 7, 18, 0.95) 100%);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  z-index: 999980;
+  color: #f8fafc;
+  font-family: inherit;
+  user-select: none;
+}
+
+.lock-top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.lock-indicators {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lock-center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.lock-time-display {
+  font-size: 72px;
+  font-weight: 300;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.lock-date-display {
+  font-size: 16px;
+  color: #94a3b8;
+  margin-bottom: 36px;
+}
+
+.lock-user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 18px 24px;
+  width: 280px;
+}
+
+.lock-user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.lock-unlock-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lock-input-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px 6px 4px 10px;
+}
+
+.lock-icon {
+  color: #64748b;
+  margin-right: 6px;
+}
+
+.lock-password-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 13px;
+}
+
+.lock-submit-btn {
+  background: var(--os-accent-primary, #38bdf8);
+  border: none;
+  border-radius: 6px;
+  color: #0f172a;
+  padding: 5px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.lock-error-text {
+  font-size: 11px;
+  color: #f87171;
+}
+
+.lock-bottom-hint {
+  font-size: 12px;
+  color: #64748b;
+}

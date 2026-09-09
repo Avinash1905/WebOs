@@ -14,6 +14,10 @@ import { useWindowStore } from './stores/windowStore';
 import { useThemeStore } from './stores/themeStore';
 import { useNotificationStore } from './stores/notificationStore';
 import { useWindowShortcuts } from './keyboard/useWindowShortcuts';
+import { useAuthStore } from './stores/authStore';
+import { BootScreen } from './shell/auth/BootScreen';
+import { LoginScreen } from './shell/auth/LoginScreen';
+import { LockScreen } from './shell/auth/LockScreen';
 import type { DesktopIconItem } from './types/desktop';
 import { appRegistry, type AppDefinition } from './contracts/appRegistry';
 
@@ -22,6 +26,7 @@ export const App: React.FC = () => {
   const currentTheme = useThemeStore((state) => state.currentTheme);
   const density = useThemeStore((state) => state.density);
   const addNotification = useNotificationStore((state) => state.addNotification);
+  const { powerState } = useAuthStore();
 
   // Activate global keyboard shortcuts
   useWindowShortcuts();
@@ -48,11 +53,11 @@ export const App: React.FC = () => {
       });
     }
 
-    // Phase 4 ready welcome notification
+    // Platform ready welcome notification
     const timer = setTimeout(() => {
       addNotification({
         title: 'WebOS Platform Ready',
-        message: 'Themes, Drag-and-Drop, Accessibility, Shortcuts, and Settings active.',
+        message: 'Themes, Drag-and-Drop, Accessibility, Shortcuts, and Full OS Suite active.',
         category: 'system',
         priority: 'normal',
         durationMs: 5000,
@@ -102,6 +107,18 @@ export const App: React.FC = () => {
     [handleOpenAppDef, openWindow]
   );
 
+  if (powerState === 'booting') {
+    return <BootScreen />;
+  }
+
+  if (powerState === 'login') {
+    return <LoginScreen />;
+  }
+
+  if (powerState === 'locked') {
+    return <LockScreen />;
+  }
+
   return (
     <ErrorBoundary fallbackTitle="Desktop Shell Recovery">
       <DesktopShell onOpenApp={handleOpenDesktopIcon}>
@@ -125,7 +142,7 @@ export const App: React.FC = () => {
           <Taskbar onOpenApp={handleOpenDesktopIcon} />
         </ErrorBoundary>
 
-        {/* Phase 3 & 4 System UI Overlays */}
+        {/* System UI Overlays */}
         <NotificationToastContainer />
         <NotificationCenter />
         <QuickSettingsPanel />

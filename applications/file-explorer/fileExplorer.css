@@ -1,0 +1,241 @@
+.file-explorer-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--os-surface-base, #0b101b);
+  color: var(--os-text-primary, #f8fafc);
+  font-family: inherit;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.explorer-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.path-bar {
+  flex: 1;
+}
+
+.path-input {
+  width: 100%;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #f8fafc;
+  font-size: 13px;
+  outline: none;
+}
+
+.path-input:focus {
+  border-color: var(--os-accent-primary, #38bdf8);
+}
+
+.explorer-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.action-btn.danger {
+  color: #f87171;
+}
+
+.action-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.explorer-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.explorer-sidebar {
+  width: 180px;
+  background: rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 600;
+  padding: 4px 8px;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 12.5px;
+  text-align: left;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+}
+
+.sidebar-link.active {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  font-weight: 500;
+}
+
+.explorer-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 16px;
+}
+
+.file-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.file-grid-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.file-grid-item.selected {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.file-icon-wrapper {
+  margin-bottom: 6px;
+}
+
+.entry-icon.dir { color: #fbbf24; }
+.entry-icon.code { color: #38bdf8; }
+.entry-icon.img { color: #34d399; }
+.entry-icon.audio { color: #f472b6; }
+.entry-icon.video { color: #a78bfa; }
+.entry-icon.file { color: #94a3b8; }
+
+.file-name {
+  font-size: 12px;
+  color: #cbd5e1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.new-folder-dialog {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.new-folder-input {
+  flex: 1;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.btn-confirm {
+  padding: 6px 12px;
+  background: var(--os-accent-primary, #38bdf8);
+  border: none;
+  border-radius: 6px;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.explorer-statusbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #64748b;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}

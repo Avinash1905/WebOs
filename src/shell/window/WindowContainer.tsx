@@ -6,6 +6,7 @@ import { WindowContent } from './WindowContent';
 import { WindowResizeHandles } from '../../wm/WindowResizeHandles';
 import { WindowErrorBoundary } from '../../errors/WindowErrorBoundary';
 import { SettingsApp } from '../settings/SettingsApp';
+import { appRegistry } from '../../contracts/appRegistry';
 import { useWindowDrag } from '../../wm/useWindowDrag';
 import { useWindowResize } from '../../wm/useWindowResize';
 import { useWindowStore } from '../../stores/windowStore';
@@ -90,6 +91,13 @@ export const WindowContainer: React.FC<WindowContainerProps> = ({
   const renderContent = () => {
     if (children) return children;
     if (win.content) return win.content;
+
+    const appDef = appRegistry.getApplication(win.appId);
+    if (appDef?.component) {
+      const ComponentToRender = appDef.component;
+      return <ComponentToRender windowId={win.id} appId={win.appId} />;
+    }
+
     if (win.appId === 'settings') {
       return <SettingsApp windowId={win.id} appId={win.appId} />;
     }

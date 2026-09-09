@@ -1,0 +1,188 @@
+.system-monitor-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--os-surface-base, #0b101b);
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.monitor-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 12px;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: #f1f5f9;
+}
+
+.tab-btn.active {
+  color: var(--os-accent-primary, #38bdf8);
+  border-bottom-color: var(--os-accent-primary, #38bdf8);
+  font-weight: 500;
+}
+
+.monitor-content {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.process-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.process-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.selected-proc-info {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.proc-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.proc-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.proc-btn.danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.proc-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.process-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12.5px;
+}
+
+.process-table th {
+  padding: 8px 10px;
+  color: #64748b;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.process-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+}
+
+.process-table tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+}
+
+.process-table tr.selected {
+  background: rgba(56, 189, 248, 0.15);
+}
+
+.proc-name {
+  color: #f8fafc;
+  font-weight: 500;
+}
+
+.status-tag {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.status-tag.running { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.status-tag.ready { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+.status-tag.stopped { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.metric-val {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill.cyan { background: #06b6d4; height: 100%; }
+.progress-fill.emerald { background: #10b981; height: 100%; }
+.progress-fill.amber { background: #f59e0b; height: 100%; }
+
+.metric-detail {
+  font-size: 11.5px;
+  color: #64748b;
+}
