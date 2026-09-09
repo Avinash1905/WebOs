@@ -1085,6 +1085,80 @@ export class FileSystem extends BaseSystemService {
     });
   }
 
+  /**
+   * Sets the owner ID of a file or directory.
+   */
+  public async setOwner(
+    path: string,
+    ownerId: string,
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
+    const normalized = PathResolver.normalize(path);
+    const node = this._tree.get(normalized);
+    if (!node) {
+      throw new FileNotFoundError(normalized);
+    }
+
+    await this._assertPermission(
+      context,
+      {
+        id: node.id,
+        path: normalized,
+        ownerId: node.ownerId,
+        mode: node.mode,
+        isDirectory: node.type === 'directory',
+      },
+      'WRITE'
+    );
+
+    const updated: FileMetadata = {
+      ...node,
+      ownerId,
+      updatedAt: Date.now(),
+    };
+
+    await this._metaStorage.set(updated.id, updated);
+    this._tree.add(updated);
+    return updated;
+  }
+
+  /**
+   * Modifies the permission mode bits of a file or directory.
+   */
+  public async chmod(
+    path: string,
+    mode: number,
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
+    const normalized = PathResolver.normalize(path);
+    const node = this._tree.get(normalized);
+    if (!node) {
+      throw new FileNotFoundError(normalized);
+    }
+
+    await this._assertPermission(
+      context,
+      {
+        id: node.id,
+        path: normalized,
+        ownerId: node.ownerId,
+        mode: node.mode,
+        isDirectory: node.type === 'directory',
+      },
+      'WRITE'
+    );
+
+    const updated: FileMetadata = {
+      ...node,
+      mode,
+      updatedAt: Date.now(),
+    };
+
+    await this._metaStorage.set(updated.id, updated);
+    this._tree.add(updated);
+    return updated;
+  }
+
   // =========================================================================
   // Search, Watchers & Tree Traversal
   // =========================================================================

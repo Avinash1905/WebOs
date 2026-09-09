@@ -104,10 +104,14 @@ export class ProcessManager extends BaseSystemService {
     // Terminate all running processes gracefully
     for (const process of this._processes.values()) {
       if (process.state === 'RUNNING' || process.state === 'PAUSED') {
-        await this.terminateProcess(process.pid, {
-          reason: 'System Shutdown',
-          terminateChildren: false,
-        });
+        await this.terminateProcess(
+          process.pid,
+          {
+            reason: 'System Shutdown',
+            terminateChildren: false,
+          },
+          { userId: 'system', role: 'ADMIN', isSystem: true }
+        );
       }
     }
   }
@@ -484,6 +488,13 @@ export class ProcessManager extends BaseSystemService {
     }
 
     return result;
+  }
+
+  /**
+   * Alias for getProcesses.
+   */
+  public listProcesses(filter?: ProcessFilter): Process[] {
+    return this.getProcesses(filter);
   }
 
   /**

@@ -23,7 +23,7 @@ export type ProcessState =
 /**
  * Process scheduling priority level.
  */
-export type ProcessPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'CRITICAL';
+export type ProcessPriority = 'IDLE' | 'LOW' | 'NORMAL' | 'HIGH' | 'CRITICAL';
 
 /**
  * Process descriptor representing an active or terminated process in WebOS.

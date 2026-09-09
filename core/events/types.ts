@@ -8,6 +8,9 @@ import type {
   AppErrorPayload,
   AppOpenedPayload,
   AppRegisteredPayload,
+  CommandCompletedPayload,
+  CommandFailedPayload,
+  CommandStartedPayload,
   DirectoryCreatedPayload,
   DirectoryDeletedPayload,
   DirectoryMovedPayload,
@@ -21,17 +24,25 @@ import type {
   PermissionDeniedPayload,
   PermissionGrantedPayload,
   PermissionRevokedPayload,
+  ProcessCompletedPayload,
   ProcessCreatedPayload,
   ProcessErrorPayload,
   ProcessPausedPayload,
+  ProcessPreemptedPayload,
+  ProcessPriorityChangedPayload,
   ProcessRestartedPayload,
   ProcessResumedPayload,
+  ProcessScheduledPayload,
   ProcessStartedPayload,
   ProcessStoppedPayload,
   ProcessTerminatedPayload,
+  SchedulerErrorPayload,
+  SchedulerLifecyclePayload,
   SecurityViolationPayload,
   SessionEndedPayload,
   SessionStartedPayload,
+  ShellLifecyclePayload,
+  ShellSessionPayload,
   StorageChangedPayload,
   StorageErrorPayload,
   StorageQuotaWarningPayload,
@@ -107,6 +118,26 @@ export interface SystemEventMap {
   PERMISSION_DENIED: PermissionDeniedPayload;
   PERMISSION_REVOKED: PermissionRevokedPayload;
   SECURITY_VIOLATION: SecurityViolationPayload;
+
+  // Scheduler
+  SCHEDULER_STARTED: SchedulerLifecyclePayload;
+  SCHEDULER_STOPPED: SchedulerLifecyclePayload;
+  SCHEDULER_PAUSED: SchedulerLifecyclePayload;
+  SCHEDULER_RESUMED: SchedulerLifecyclePayload;
+  SCHEDULER_ERROR: SchedulerErrorPayload;
+  PROCESS_SCHEDULED: ProcessScheduledPayload;
+  PROCESS_PREEMPTED: ProcessPreemptedPayload;
+  PROCESS_COMPLETED: ProcessCompletedPayload;
+  PROCESS_PRIORITY_CHANGED: ProcessPriorityChangedPayload;
+
+  // Shell
+  SHELL_STARTED: ShellLifecyclePayload;
+  SHELL_STOPPED: ShellLifecyclePayload;
+  SHELL_SESSION_CREATED: ShellSessionPayload;
+  SHELL_SESSION_CLOSED: ShellSessionPayload;
+  COMMAND_STARTED: CommandStartedPayload;
+  COMMAND_COMPLETED: CommandCompletedPayload;
+  COMMAND_FAILED: CommandFailedPayload;
 }
 
 /**

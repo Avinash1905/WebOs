@@ -97,6 +97,7 @@ export type StorageEventType =
   (typeof STORAGE_EVENTS)[keyof typeof STORAGE_EVENTS];
 
 // ==========================================
+// ==========================================
 // 7. Security & Permission Events
 // ==========================================
 export const SECURITY_EVENTS = {
@@ -110,6 +111,40 @@ export type SecurityEventType =
   (typeof SECURITY_EVENTS)[keyof typeof SECURITY_EVENTS];
 
 // ==========================================
+// 8. Scheduler Events
+// ==========================================
+export const SCHEDULER_EVENTS = {
+  SCHEDULER_STARTED: 'SCHEDULER_STARTED',
+  SCHEDULER_STOPPED: 'SCHEDULER_STOPPED',
+  SCHEDULER_PAUSED: 'SCHEDULER_PAUSED',
+  SCHEDULER_RESUMED: 'SCHEDULER_RESUMED',
+  SCHEDULER_ERROR: 'SCHEDULER_ERROR',
+  PROCESS_SCHEDULED: 'PROCESS_SCHEDULED',
+  PROCESS_PREEMPTED: 'PROCESS_PREEMPTED',
+  PROCESS_COMPLETED: 'PROCESS_COMPLETED',
+  PROCESS_PRIORITY_CHANGED: 'PROCESS_PRIORITY_CHANGED',
+} as const;
+
+export type SchedulerEventType =
+  (typeof SCHEDULER_EVENTS)[keyof typeof SCHEDULER_EVENTS];
+
+// ==========================================
+// 9. Shell Events
+// ==========================================
+export const SHELL_EVENTS = {
+  SHELL_STARTED: 'SHELL_STARTED',
+  SHELL_STOPPED: 'SHELL_STOPPED',
+  SHELL_SESSION_CREATED: 'SHELL_SESSION_CREATED',
+  SHELL_SESSION_CLOSED: 'SHELL_SESSION_CLOSED',
+  COMMAND_STARTED: 'COMMAND_STARTED',
+  COMMAND_COMPLETED: 'COMMAND_COMPLETED',
+  COMMAND_FAILED: 'COMMAND_FAILED',
+} as const;
+
+export type ShellEventType =
+  (typeof SHELL_EVENTS)[keyof typeof SHELL_EVENTS];
+
+// ==========================================
 // Combined All System Event Types
 // ==========================================
 export const SYSTEM_EVENT_TYPES = {
@@ -120,6 +155,8 @@ export const SYSTEM_EVENT_TYPES = {
   ...USER_EVENTS,
   ...STORAGE_EVENTS,
   ...SECURITY_EVENTS,
+  ...SCHEDULER_EVENTS,
+  ...SHELL_EVENTS,
 } as const;
 
 export type SystemEventType =
@@ -129,4 +166,7 @@ export type SystemEventType =
   | ApplicationEventType
   | UserEventType
   | StorageEventType
-  | SecurityEventType;
+  | SecurityEventType
+  | SchedulerEventType
+  | ShellEventType;
+

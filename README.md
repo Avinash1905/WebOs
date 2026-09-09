@@ -123,6 +123,23 @@ The central operating system runtime, service orchestration engine, messaging bu
 - **Environment & CWD Isolation**: Per-process environment variables (`USER`, `HOME`, `PATH`, etc.) and working directory resolution.
 - **Process Security**: Ownership checks preventing non-admin users from pausing, resuming, or terminating processes belonging to other users.
 
+### 9. Process Scheduler Subsystem (`core/scheduler/`)
+- **Priority-Based Scheduling**: Multi-level priority queues (`CRITICAL`, `HIGH`, `NORMAL`, `LOW`, `IDLE`) with priority weights and configurable time slice multipliers.
+- **Fair Round-Robin Ordering (`PriorityRoundRobinPolicy`)**: Round-robin fair dispatching per bucket and priority cycle.
+- **Preemptive Stepping**: Cooperative/time-sliced step execution (`scheduler.step()`), timer loops (`startAutoLoop`), and preemption handling.
+- **Anti-Starvation Aging**: Automatic priority elevation for starved ready processes waiting beyond `agingThresholdMs`.
+- **Telemetry & Metrics (`SchedulerMetricsTracker`)**: Real-time tracking of context switches, CPU runtimes, process states, and uptime.
+
+### 10. Shell / Terminal Engine (`core/shell/`)
+- **Tokenizer & Parser (`CommandParser`)**: Robust command line parsing supporting single/double quotes, escape sequences, short flags (`-la`), and key-value options (`--key=value`).
+- **Session Environment & History (`ShellSession`, `Environment`, `ShellHistory`)**: Isolated user shell sessions with working directories (`cwd`), environment variable expansion (`$VAR`, `${VAR}`), and bounded history.
+- **Built-in System Commands (`BuiltinCommands`)**:
+  - Filesystem: `pwd`, `ls`, `cd`, `mkdir`, `touch`, `cat`, `write`, `append`, `cp`, `mv`, `rm`
+  - Users & Sessions: `whoami`, `users`, `session`
+  - Processes: `ps`, `kill`
+  - System: `help`, `clear`, `echo`, `date`, `uptime`
+- **Extensible Command Registry (`CommandRegistry`)**: Dynamic registration of custom shell commands and aliases.
+
 ---
 
 ## 🚀 Complete Integration Example
@@ -136,23 +153,36 @@ import { PermissionManager, DEFAULT_MODES } from './core/permissions/index.js';
 import { FileSystem } from './core/filesystem/index.js';
 import { TrashManager } from './core/trash/index.js';
 import { ProcessManager } from './core/process/index.js';
+import { Scheduler } from './core/scheduler/index.js';
+import { Shell } from './core/shell/index.js';
 
 // 1. Instantiate Core Subsystems
 const kernel = new Kernel();
 const eventBus = new EventBus();
-const storage = new StorageEngine({ adapter: 'indexeddb', eventBus });
+const storage = new StorageEngine({ adapter: 'memory', eventBus });
 
 const userManager = new UserManager({ storage, eventBus });
 const permManager = new PermissionManager({ storage, eventBus, userManager });
 const fs = new FileSystem({ storage, eventBus, permissionManager: permManager, userManager });
 const trashManager = new TrashManager({ storage, eventBus, fileSystem: fs, permissionManager: permManager });
 const processManager = new ProcessManager({ storage, eventBus, userManager, permissionManager: permManager, fileSystem: fs });
+const scheduler = new Scheduler({ storage, eventBus, processManager });
+const shell = new Shell({
+  storage,
+  eventBus,
+  fileSystem: fs,
+  permissionManager: permManager,
+  userManager,
+  processManager,
+  scheduler,
+  trashManager,
+});
 
 // Connect cross-service references
 userManager.attachFileSystem(fs);
 fs.attachTrashManager(trashManager);
 
-// 2. Register with Kernel
+// 2. Register all 10 services with Kernel
 kernel.registerService(eventBus);
 kernel.registerService(storage);
 kernel.registerService(userManager);
@@ -160,6 +190,8 @@ kernel.registerService(permManager);
 kernel.registerService(fs);
 kernel.registerService(trashManager);
 kernel.registerService(processManager);
+kernel.registerService(scheduler);
+kernel.registerService(shell);
 
 eventBus.attachToKernel(kernel);
 
@@ -169,28 +201,20 @@ await kernel.start();
 
 console.log(`WebOS Kernel status: ${kernel.getStatus()}`); // RUNNING
 
-// 4. Multi-User & VFS Operations
-const alice = await userManager.createUser({ username: 'alice', role: USER_ROLES.USER });
-await userManager.switchUser(alice.id);
+// 4. Create User & Launch Shell Session
+const charlie = await userManager.createUser({ username: 'charlie', role: USER_ROLES.USER, provisionHomeDirectory: true });
+const session = shell.createSession({ userId: charlie.id });
 
-// Alice creates a private document
-const file = await fs.createFile('/home/alice/Documents/notes.txt', {
-  content: 'Top secret project notes',
-  mode: DEFAULT_MODES.PRIVATE_FILE, // 0o600
-});
+// 5. Execute Shell Commands
+await session.execute('mkdir -p workspace/src');
+await session.execute('write workspace/src/app.ts \'console.log("Hello WebOS");\'');
+const catRes = await session.execute('cat workspace/src/app.ts');
+console.log(catRes.output); // console.log("Hello WebOS");
 
-// 5. Process Lifecycle
-const proc = await processManager.createProcess({
-  name: 'TextEditor',
-  cwd: '/home/alice/Documents',
-  autoStart: true,
-});
-
-console.log(`Process started: PID ${proc.pid} (${proc.name}) in state ${proc.state}`);
-
-// 6. Safe Deletion to Trash & Restoration
-const trashEntry = await trashManager.moveToTrash('/home/alice/Documents/notes.txt');
-await trashManager.restore(trashEntry.trashId);
+// 6. Launch & Schedule Process
+const proc = await processManager.createProcess({ name: 'AppTask', userId: charlie.id, autoStart: true });
+scheduler.startProcessScheduling(proc.pid);
+scheduler.step();
 ```
 
 ---
@@ -200,7 +224,7 @@ await trashManager.restore(trashEntry.trashId);
 All subsystems are covered by unit and integration test suites:
 
 ```bash
-# Run Vitest test suite (134 tests across 11 test files)
+# Run Vitest test suite (156 tests across 15 test files)
 npm test
 
 # Run strict TypeScript typechecking
@@ -221,6 +245,10 @@ npm run build
 - `tests/permissions/PermissionManager.test.ts` (7 tests)
 - `tests/trash/TrashManager.test.ts` (5 tests)
 - `tests/process/ProcessManager.test.ts` (8 tests)
+- `tests/scheduler/Scheduler.test.ts` (8 tests)
+- `tests/shell/CommandParser.test.ts` (8 tests)
+- `tests/shell/Shell.test.ts` (5 tests)
 - `tests/integration/OSCoreIntegration.test.ts` (4 tests)
+- `tests/integration/OSCoreCombinedEngine.test.ts` (1 test)
 
-**Total: 11 test suites, 134 tests passing (100% pass rate).**
+**Total: 15 test suites, 156 tests passing (100% pass rate).**

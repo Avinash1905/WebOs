@@ -247,3 +247,74 @@ export interface SecurityViolationPayload {
   readonly description: string;
   readonly source?: string;
 }
+
+// ==========================================
+// 8. Scheduler Payloads
+// ==========================================
+export interface SchedulerLifecyclePayload {
+  readonly status?: string;
+  readonly timestamp?: number;
+}
+
+export interface SchedulerErrorPayload {
+  readonly error: Error | string;
+  readonly context?: unknown;
+}
+
+export interface ProcessScheduledPayload {
+  readonly pid: number;
+  readonly priority: string;
+  readonly timeSliceMs: number;
+}
+
+export interface ProcessPreemptedPayload {
+  readonly pid: number;
+  readonly reason?: string;
+}
+
+export interface ProcessCompletedPayload {
+  readonly pid: number;
+  readonly exitCode?: number;
+}
+
+export interface ProcessPriorityChangedPayload {
+  readonly pid: number;
+  readonly oldPriority: string;
+  readonly newPriority: string;
+}
+
+// ==========================================
+// 9. Shell Payloads
+// ==========================================
+export interface ShellLifecyclePayload {
+  readonly status?: string;
+  readonly timestamp?: number;
+}
+
+export interface ShellSessionPayload {
+  readonly sessionId: string;
+  readonly userId: string;
+  readonly username?: string;
+  readonly cwd: string;
+}
+
+export interface CommandStartedPayload {
+  readonly sessionId: string;
+  readonly command: string;
+  readonly args: readonly string[];
+}
+
+export interface CommandCompletedPayload {
+  readonly sessionId: string;
+  readonly command: string;
+  readonly exitCode: number;
+  readonly durationMs?: number;
+}
+
+export interface CommandFailedPayload {
+  readonly sessionId: string;
+  readonly command: string;
+  readonly error: string;
+  readonly exitCode: number;
+}
+

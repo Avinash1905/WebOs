@@ -468,6 +468,8 @@ export class UserManager extends BaseSystemService {
           },
           systemContext
         );
+      } else {
+        await this._fileSystem.setOwner(homePath, ownerId, systemContext);
       }
 
       for (const dir of subdirs) {
@@ -481,6 +483,8 @@ export class UserManager extends BaseSystemService {
             },
             systemContext
           );
+        } else {
+          await this._fileSystem.setOwner(fullPath, ownerId, systemContext);
         }
       }
     } catch {
