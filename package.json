@@ -1,0 +1,18 @@
+{
+  "name": "webos",
+  "version": "0.1.0",
+  "description": "WebOS Kernel & Core Runtime Engine",
+  "type": "module",
+  "main": "dist/core/kernel/index.js",
+  "types": "dist/core/kernel/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

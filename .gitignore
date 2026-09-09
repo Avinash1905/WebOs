@@ -3,15 +3,15 @@ node_modules/
 .pnp
 .pnp.js
 
-# Testing and Coverage
-coverage/
-*.lcov
-.nyc_output
-
 # Build Output
 dist/
 build/
 *.tsbuildinfo
+
+# Testing and Coverage
+coverage/
+*.lcov
+.nyc_output
 
 # Environment variables
 .env
