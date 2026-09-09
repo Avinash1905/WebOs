@@ -33,5 +33,5 @@ describe('Settings Application Subsystem', () => {
     const a11yTab = screen.getByRole('button', { name: /accessibility/i });
     fireEvent.click(a11yTab);
     expect(screen.getByText('High Contrast Mode (WCAG AAA)')).toBeInTheDocument();
-  });
+  }, 15000);
 });

@@ -111,6 +111,10 @@ export interface WindowManagerStore {
   toggleMinimize: (id: string) => void;
   toggleMaximize: (id: string) => void;
   toggleFullscreen: (id: string) => void;
+  setWindowTitle: (id: string, title: string) => void;
+  recoverOffscreenWindows: () => void;
+  cascadeWindows: () => void;
+  tileWindows: () => void;
   snapWindow: (id: string, zone: SnapZone) => void;
   updateWindowBounds: (id: string, bounds: Partial<WindowBounds>) => void;
   setHoveredSnapZone: (zone: SnapZone, bounds: WindowBounds | null) => void;

@@ -232,6 +232,105 @@ export const useWindowStore = create<WindowManagerStore>((set, get) => ({
       };
     }),
 
+  setWindowTitle: (id, title) =>
+    set((state) => ({
+      windows: state.windows.map((w) =>
+        w.id === id ? { ...w, title, updatedAt: Date.now() } : w
+      ),
+    })),
+
+  recoverOffscreenWindows: () =>
+    set((state) => {
+      const viewport = getViewportDimensions();
+      return {
+        windows: state.windows.map((w) => {
+          if (w.state === 'minimized') return w;
+          const clamped = clampBoundsToViewport(
+            w.bounds,
+            w.minWidth ?? DEFAULT_MIN_WIDTH,
+            w.minHeight ?? DEFAULT_MIN_HEIGHT,
+            viewport
+          );
+          return {
+            ...w,
+            bounds: clamped,
+            updatedAt: Date.now(),
+          };
+        }),
+      };
+    }),
+
+  cascadeWindows: () =>
+    set((state) => {
+      const viewport = getViewportDimensions();
+      const step = 32;
+
+      let idx = 0;
+      return {
+        windows: state.windows.map((w) => {
+          if (w.state === 'minimized') return w;
+          const cascadeX = Math.min(40 + idx * step, viewport.width - 400);
+          const cascadeY = Math.min(40 + idx * step, viewport.availableHeight - 300);
+          idx++;
+
+          const newBounds: WindowBounds = {
+            x: Math.max(20, cascadeX),
+            y: Math.max(20, cascadeY),
+            width: Math.min(w.bounds.width || DEFAULT_WINDOW_WIDTH, viewport.width - 80),
+            height: Math.min(w.bounds.height || DEFAULT_WINDOW_HEIGHT, viewport.availableHeight - 60),
+          };
+
+          return {
+            ...w,
+            state: 'normal',
+            bounds: newBounds,
+            previousBounds: newBounds,
+            updatedAt: Date.now(),
+          };
+        }),
+      };
+    }),
+
+  tileWindows: () =>
+    set((state) => {
+      const nonMinimized = state.windows.filter((w) => w.state !== 'minimized');
+      if (nonMinimized.length === 0) return state;
+
+      const viewport = getViewportDimensions();
+      const count = nonMinimized.length;
+      const cols = count <= 2 ? count : Math.ceil(Math.sqrt(count));
+      const rows = Math.ceil(count / cols);
+
+      const cellW = Math.floor(viewport.width / cols);
+      const cellH = Math.floor(viewport.availableHeight / rows);
+
+      const winMap = new Map<string, WindowBounds>();
+      nonMinimized.forEach((w, index) => {
+        const col = index % cols;
+        const row = Math.floor(index / cols);
+        winMap.set(w.id, {
+          x: col * cellW,
+          y: row * cellH,
+          width: cellW,
+          height: cellH,
+        });
+      });
+
+      return {
+        windows: state.windows.map((w) => {
+          const newB = winMap.get(w.id);
+          if (!newB) return w;
+          return {
+            ...w,
+            state: 'normal',
+            bounds: newB,
+            previousBounds: newB,
+            updatedAt: Date.now(),
+          };
+        }),
+      };
+    }),
+
   snapWindow: (id, zone) => {
     if (zone === 'none') return;
     const snapBounds = calculateSnapBounds(zone);

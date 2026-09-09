@@ -6,9 +6,10 @@ import { ShortcutEditor } from './ShortcutEditor';
 import { DesktopSettings } from './DesktopSettings';
 import { TaskbarSettings } from './TaskbarSettings';
 import { A11ySettings } from './A11ySettings';
+import { DefaultAppsSettings } from './DefaultAppsSettings';
 import './settings.css';
 
-type SettingsTab = 'theme' | 'wallpaper' | 'shortcuts' | 'desktop' | 'taskbar' | 'a11y';
+type SettingsTab = 'theme' | 'wallpaper' | 'shortcuts' | 'desktop' | 'taskbar' | 'a11y' | 'default-apps';
 
 interface NavItem {
   id: SettingsTab;
@@ -22,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'shortcuts', label: 'Shortcuts', icon: Keyboard },
   { id: 'desktop', label: 'Desktop & Icons', icon: Layout },
   { id: 'taskbar', label: 'Taskbar & Clock', icon: Monitor },
+  { id: 'default-apps', label: 'Default Apps', icon: Layout },
   { id: 'a11y', label: 'Accessibility', icon: Accessibility },
 ];
 
@@ -61,6 +63,7 @@ export const SettingsApp: React.FC<SettingsAppProps> = () => {
         {activeTab === 'shortcuts' && <ShortcutEditor />}
         {activeTab === 'desktop' && <DesktopSettings />}
         {activeTab === 'taskbar' && <TaskbarSettings />}
+        {activeTab === 'default-apps' && <DefaultAppsSettings />}
         {activeTab === 'a11y' && <A11ySettings />}
       </main>
     </div>
