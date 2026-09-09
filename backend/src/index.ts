@@ -47,3 +47,5 @@ export * from './common/utils/object.js';
 export * from './common/utils/string.js';
 export * from './services/index.js';
 export * from './repositories/index.js';
+export * from './modules/index.js';
+export * from './modules/phase1.container.js';

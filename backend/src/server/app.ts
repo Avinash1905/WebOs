@@ -18,10 +18,13 @@ import { HealthService } from '../health/health.service.js';
 import { registerRoutes } from './routes.js';
 import { IdUtils } from '../common/utils/id.js';
 
+import type { Phase1Services } from '../modules/phase1.container.js';
+
 export interface AppFactoryOptions {
   readonly config?: AppConfig;
   readonly serverOptions?: Partial<FastifyServerOptions>;
   readonly healthService?: HealthService;
+  readonly phase1Services?: Phase1Services;
 }
 
 export async function createApp(options: AppFactoryOptions = {}): Promise<FastifyInstance> {
@@ -59,14 +62,12 @@ export async function createApp(options: AppFactoryOptions = {}): Promise<Fastif
   // 4. Structured request lifecycle logging
   registerRequestLogging(app);
 
-  // 5. Centralized route registration
-  await registerRoutes(app, { healthService });
-
-  // 6. Unknown route 404 handler
+  // 5. Global error handling and not-found handling
+  app.setErrorHandler(createGlobalErrorHandler(config.isProduction));
   app.setNotFoundHandler(createNotFoundHandler(config.isProduction));
 
-  // 7. Global error handling
-  app.setErrorHandler(createGlobalErrorHandler(config.isProduction));
+  // 6. Centralized route registration
+  await registerRoutes(app, { healthService, phase1Services: options.phase1Services });
 
   return app;
 }

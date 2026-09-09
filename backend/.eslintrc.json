@@ -19,5 +19,13 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "no-console": "warn"
   },
+  "overrides": [
+    {
+      "files": ["src/modules/database/repositories/prisma/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ],
   "ignorePatterns": ["dist/", "node_modules/", "coverage/"]
 }
