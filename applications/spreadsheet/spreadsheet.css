@@ -1,0 +1,526 @@
+/**
+ * @file applications/spreadsheet/spreadsheet.css
+ * @description Premium styling for WebOS Spreadsheet suite.
+ */
+
+.wb-spreadsheet-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: #0f172a;
+  color: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+/* Toolbar */
+.wb-spreadsheet-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+.wb-spreadsheet-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wb-sp-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 4px;
+}
+
+.wb-sp-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #cbd5e1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.wb-sp-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.wb-sp-btn.active {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #60a5fa;
+}
+
+.wb-sp-btn.highlight {
+  background: #8b5cf6;
+  color: #ffffff;
+}
+
+.wb-sp-btn.highlight:hover {
+  background: #7c3aed;
+}
+
+.wb-sp-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wb-sp-select {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  outline: none;
+}
+
+.wb-sp-color-picker {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+}
+
+.wb-sp-color-picker input[type='color'] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Formula Bar */
+.wb-spreadsheet-formulabar {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.95);
+  padding: 4px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 10px;
+}
+
+.wb-sp-cell-ref {
+  width: 60px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: bold;
+  color: #60a5fa;
+  background: rgba(30, 41, 59, 0.6);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wb-sp-fx-symbol {
+  font-weight: bold;
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.wb-sp-formula-input {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  font-family: monospace;
+}
+
+.wb-sp-formula-input:focus {
+  border-color: #3b82f6;
+  background: rgba(30, 41, 59, 0.9);
+}
+
+/* Grid Container */
+.wb-spreadsheet-grid-container {
+  flex: 1;
+  overflow: auto;
+  outline: none;
+  position: relative;
+  background: #090d16;
+}
+
+.wb-spreadsheet-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.wb-sp-corner-header {
+  width: 40px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.wb-sp-col-header {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  padding: 4px 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.wb-sp-col-header.active {
+  background: #334155;
+  color: #60a5fa;
+}
+
+.wb-sp-col-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100%;
+}
+
+.wb-sp-col-resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  cursor: col-resize;
+}
+
+.wb-sp-row-header {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  width: 40px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.wb-sp-row-header.active {
+  background: #334155;
+  color: #60a5fa;
+}
+
+.wb-sp-cell {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  height: 24px;
+  padding: 0 4px;
+  font-size: 12px;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+.wb-sp-cell.selected {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.wb-sp-cell.anchor {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+.wb-sp-cell.error {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.wb-sp-cell-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.wb-sp-inline-input {
+  width: 100%;
+  height: 100%;
+  background: #1e293b;
+  border: 2px solid #3b82f6;
+  color: #ffffff;
+  padding: 0 2px;
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+}
+
+/* Sheet Bar */
+.wb-spreadsheet-sheetbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1e293b;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+}
+
+.wb-sp-sheet-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.wb-sp-add-sheet-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.wb-sp-add-sheet-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.wb-sp-sheet-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 4px 4px 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.wb-sp-sheet-tab.active {
+  background: #0f172a;
+  color: #3b82f6;
+  font-weight: 600;
+  border-top: 2px solid #3b82f6;
+}
+
+.wb-sp-sheet-rename-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #3b82f6;
+  color: #ffffff;
+  font-size: 12px;
+  outline: none;
+  width: 80px;
+}
+
+.wb-sp-delete-sheet-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.wb-sp-delete-sheet-btn:hover {
+  color: #ef4444;
+}
+
+.wb-sp-statusbar-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.wb-sp-status-item b {
+  color: #94a3b8;
+}
+
+/* Modal Overlay */
+.wb-spreadsheet-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.wb-spreadsheet-modal {
+  width: 640px;
+  max-width: 90%;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wb-spreadsheet-modal.small {
+  width: 400px;
+}
+
+.wb-sp-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wb-sp-modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #f8fafc;
+}
+
+.wb-sp-modal-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.wb-sp-modal-body {
+  display: flex;
+  gap: 20px;
+}
+
+.wb-sp-chart-controls {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wb-sp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wb-sp-form-group label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.wb-sp-form-group input,
+.wb-sp-form-group select {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.wb-sp-chart-preview-box {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wb-sp-chart-preview-box h4 {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.wb-sp-svg-render-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wb-sp-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.wb-sp-btn-pri {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wb-sp-btn-sec {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.wb-sp-existing-charts {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+}
+
+.wb-sp-chart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wb-sp-chart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0f172a;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.wb-sp-btn-del {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}

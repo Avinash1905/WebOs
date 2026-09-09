@@ -1,0 +1,583 @@
+/**
+ * @file applications/database-viewer/databaseViewer.css
+ * @description Styling for WebOS Database Viewer application.
+ */
+
+.wb-db-app {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: #0b1120;
+  color: #f1f5f9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.wb-db-sidebar {
+  width: 280px;
+  background: rgba(15, 23, 42, 0.95);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.wb-db-sidebar-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wb-db-sidebar-header h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #f8fafc;
+}
+
+.wb-db-select {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  outline: none;
+}
+
+.wb-db-tree-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wb-db-schema-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wb-db-schema-header {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.wb-db-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.wb-db-tables-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wb-db-table-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.wb-db-table-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.wb-db-table-item.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.wb-db-expand-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 0;
+  width: 12px;
+}
+
+.wb-db-table-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb-db-row-badge {
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.wb-db-column-tree {
+  margin-left: 20px;
+  padding-left: 8px;
+  border-left: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.wb-db-sub-title {
+  font-size: 9px;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.wb-db-column-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.wb-db-col-name {
+  flex: 1;
+}
+
+.wb-db-col-type {
+  font-family: monospace;
+  font-size: 10px;
+  color: #60a5fa;
+}
+
+.wb-db-index-item,
+.wb-db-view-item {
+  font-size: 11px;
+  color: #a7f3d0;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
+.wb-db-saved-queries-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 8px;
+}
+
+.wb-db-saved-query-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  font-size: 12px;
+  color: #cbd5e1;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.wb-db-saved-query-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.wb-db-del-query-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.wb-db-del-query-btn:hover {
+  color: #ef4444;
+}
+
+/* Main Content Area */
+.wb-db-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.wb-db-tab-bar {
+  display: flex;
+  background: #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wb-db-tab {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.wb-db-tab.active {
+  color: #60a5fa;
+  border-bottom-color: #3b82f6;
+  background: #0f172a;
+}
+
+/* Grid Wrapper */
+.wb-db-grid-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wb-db-grid-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(30, 41, 59, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 12px;
+}
+
+.wb-db-grid-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.wb-db-count-tag {
+  background: #334155;
+  color: #94a3b8;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.wb-db-search-box input {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: 220px;
+  outline: none;
+}
+
+.wb-db-grid-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.wb-db-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wb-db-btn.pri {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.wb-db-btn.sec {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+.wb-db-table-scroll {
+  flex: 1;
+  overflow: auto;
+}
+
+.wb-db-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.wb-db-table th {
+  background: #1e293b;
+  color: #94a3b8;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  cursor: pointer;
+}
+
+.wb-db-th-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wb-db-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+}
+
+.wb-db-table tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wb-db-action-th,
+.wb-db-action-td {
+  width: 70px;
+  text-align: center;
+}
+
+.wb-db-row-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+}
+
+.wb-db-pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: #1e293b;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.wb-db-page-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wb-db-page-controls button {
+  background: #334155;
+  border: none;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.wb-db-page-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Query Editor Wrapper */
+.wb-db-query-editor-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 16px;
+  gap: 16px;
+}
+
+.wb-db-query-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #1e293b;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wb-db-query-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wb-db-history-select {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.wb-db-sql-textarea {
+  width: 100%;
+  height: 90px;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #38bdf8;
+  font-family: monospace;
+  font-size: 13px;
+  padding: 10px;
+  border-radius: 6px;
+  outline: none;
+  resize: vertical;
+}
+
+.wb-db-query-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wb-db-query-status-badge {
+  margin-left: auto;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.wb-db-query-status-badge .status.completed {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.wb-db-query-status-badge .status.failed {
+  color: #f87171;
+  font-weight: bold;
+}
+
+.wb-db-query-results-area {
+  flex: 1;
+  overflow: auto;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.wb-db-query-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* Modals */
+.wb-db-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.wb-db-modal {
+  width: 460px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wb-db-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wb-db-modal-header h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #f8fafc;
+}
+
+.wb-db-modal-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.wb-db-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.wb-db-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wb-db-field-group label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.wb-db-field-group input {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.wb-db-validation-alert {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.wb-db-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.wb-db-empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.wb-db-empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}

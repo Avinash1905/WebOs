@@ -1,0 +1,405 @@
+/**
+ * @file applications/task-manager/taskManager.css
+ * @description Premium styling for WebOS Task Manager.
+ */
+
+.wb-tm-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: #090d16;
+  color: #f1f5f9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+/* Header */
+.wb-tm-header {
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.wb-tm-metrics-banner {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wb-tm-metric-card {
+  flex: 1;
+  min-width: 110px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wb-tm-metric-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.wb-tm-metric-label {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.wb-tm-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+}
+
+.wb-tm-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.wb-tm-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.wb-tm-tab.active {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.wb-tm-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wb-tm-search-input {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: 200px;
+  outline: none;
+}
+
+.wb-tm-btn-refresh {
+  background: #334155;
+  border: none;
+  color: #f8fafc;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Table */
+.wb-tm-table-container {
+  flex: 1;
+  overflow: auto;
+}
+
+.wb-tm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.wb-tm-table th {
+  background: #1e293b;
+  color: #94a3b8;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.wb-tm-tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+.wb-tm-tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.wb-tm-tr.selected {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.wb-tm-table td {
+  padding: 8px 12px;
+  color: #cbd5e1;
+}
+
+.wb-tm-pid {
+  font-family: monospace;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.wb-tm-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.wb-tm-appid {
+  font-family: monospace;
+  color: #94a3b8;
+}
+
+.wb-tm-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.wb-tm-badge.running {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+.wb-tm-badge.suspended {
+  background: rgba(234, 179, 8, 0.2);
+  color: #facc15;
+}
+
+.wb-tm-prio {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.wb-tm-prio.high {
+  color: #f87171;
+}
+
+.wb-tm-prio.normal {
+  color: #60a5fa;
+}
+
+.wb-tm-prio.low {
+  color: #94a3b8;
+}
+
+.wb-tm-actions-td {
+  display: flex;
+  gap: 4px;
+}
+
+.wb-tm-btn-icon {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.wb-tm-btn-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Performance View */
+.wb-tm-performance-view {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.wb-tm-graph-card {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wb-tm-graph-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wb-tm-graph-header h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #f8fafc;
+}
+
+.wb-tm-graph-current {
+  font-size: 16px;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+.wb-tm-svg-container {
+  height: 120px;
+  background: #0f172a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.wb-tm-svg-graph {
+  width: 100%;
+  height: 100%;
+}
+
+.wb-tm-graph-footer {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Modals */
+.wb-tm-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.wb-tm-modal {
+  width: 480px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wb-tm-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wb-tm-modal-header h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #f8fafc;
+}
+
+.wb-tm-modal-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.wb-tm-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.wb-tm-prop-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.wb-tm-prop-row .label {
+  color: #94a3b8;
+}
+
+.wb-tm-prop-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.wb-tm-perm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.wb-tm-chip {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #a7f3d0;
+}
+
+.wb-tm-desc {
+  font-size: 12px;
+  color: #cbd5e1;
+  margin: 0;
+  background: #0f172a;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.wb-tm-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.wb-tm-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.wb-tm-btn.pri {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.wb-tm-btn.sec {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+.wb-tm-btn.danger {
+  background: #ef4444;
+  color: #ffffff;
+}

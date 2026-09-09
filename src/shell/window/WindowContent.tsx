@@ -10,6 +10,10 @@ import { NotesApp } from '../../../applications/notes/NotesApp.js';
 import { DocumentEditorApp } from '../../../applications/document-editor/DocumentEditorApp.js';
 import { TerminalApp } from '../../../applications/terminal/TerminalApp.js';
 import { CodeEditorApp } from '../../../applications/code-editor/CodeEditorApp.js';
+import { CalculatorApp } from '../../../applications/calculator/CalculatorApp.js';
+import { SpreadsheetApp } from '../../../applications/spreadsheet/SpreadsheetApp.js';
+import { DatabaseViewerApp } from '../../../applications/database-viewer/DatabaseViewerApp.js';
+import { TaskManagerApp } from '../../../applications/task-manager/TaskManagerApp.js';
 
 export interface WindowContentProps {
   children?: React.ReactNode;
@@ -37,6 +41,16 @@ export const WindowContent: React.FC<WindowContentProps> = ({ children, classNam
         return <NotesApp />;
       case 'document-editor':
         return <DocumentEditorApp initialFilePath={data?.initialFilePath} />;
+      case 'calculator':
+        return <CalculatorApp />;
+      case 'spreadsheet':
+        return <SpreadsheetApp filePath={data?.initialFilePath} />;
+      case 'database-viewer':
+      case 'database':
+        return <DatabaseViewerApp />;
+      case 'task-manager':
+      case 'monitor':
+        return <TaskManagerApp />;
       default:
         return null;
     }
