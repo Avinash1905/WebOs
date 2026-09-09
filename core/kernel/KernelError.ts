@@ -177,3 +177,13 @@ export class KernelTimeoutError extends KernelError {
     this.timeoutMs = timeoutMs;
   }
 }
+
+/**
+ * Thrown when an invalid Kernel configuration is supplied.
+ */
+export class KernelConfigError extends KernelError {
+  constructor(message: string) {
+    super(message, 'KERNEL_CONFIG_ERROR');
+    this.name = 'KernelConfigError';
+  }
+}

@@ -13,3 +13,6 @@ export * from './SearchSort.js';
 export * from './SearchCache.js';
 export * from './SearchIndexer.js';
 export * from './SearchEngine.js';
+export * from './InvertedIndexEngine.js';
+export * from './QueryParser.js';
+export * from './IncrementalIndexer.js';

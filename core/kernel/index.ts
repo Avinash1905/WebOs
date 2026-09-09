@@ -1,50 +1,20 @@
 /**
  * @file index.ts
- * @description WebOS Module 1 — Kernel / Core Engine barrel exports.
+ * @description Public exports for WebOS Kernel / Core Engine Subsystem.
  */
 
-// Core Kernel Engine
-export { Kernel } from './Kernel.js';
-
-// Configuration
-export {
-  DEFAULT_KERNEL_CONFIG,
-  type KernelConfig,
-  type KernelLogger,
-  resolveKernelConfig,
-} from './KernelConfig.js';
-
-// State Tracker
-export { KernelState } from './KernelState.js';
-
-// Service Registry & Interfaces
-export { BaseSystemService, type SystemService } from './Service.js';
-export { ServiceRegistry } from './ServiceRegistry.js';
-
-// Dependency Resolution
-export { ServiceDependencyResolver } from './ServiceDependency.js';
-
-// Error Hierarchy
-export {
-  CircularDependencyError,
-  InvalidKernelStateError,
-  KernelError,
-  KernelTimeoutError,
-  MissingDependencyError,
-  ServiceAlreadyRegisteredError,
-  ServiceInitializationError,
-  ServiceNotFoundError,
-  ServiceShutdownError,
-  ServiceStartupError,
-} from './KernelError.js';
-
-// Types & Contracts
-export type {
-  KernelEvent,
-  KernelEventListener,
-  KernelEventType,
-  KernelStateSnapshot,
-  KernelStatus,
-  ServiceInfo,
-  ServiceStatus,
-} from './types.js';
+export * from './types.js';
+export * from './Kernel.js';
+export * from './KernelConfig.js';
+export * from './KernelConfigValidator.js';
+export * from './KernelError.js';
+export * from './KernelState.js';
+export * from './KernelBootManager.js';
+export * from './KernelWatchdog.js';
+export * from './KernelPanicHandler.js';
+export * from './KernelStateSnapshot.js';
+export * from './KernelMetricsCollector.js';
+export * from './KernelTracing.js';
+export * from './Service.js';
+export * from './ServiceDependency.js';
+export * from './ServiceRegistry.js';

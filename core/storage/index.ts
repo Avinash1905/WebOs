@@ -1,52 +1,23 @@
 /**
  * @file index.ts
- * @description WebOS Module 3 — Storage Engine barrel exports.
+ * @description Public exports for WebOS Storage Engine Subsystem.
  */
 
-// Storage Engine Runtime & Namespaces
-export { NamespaceStorage, StorageEngine } from './StorageEngine.js';
-
-// Storage Adapters
-export { IndexedDBAdapter } from './IndexedDBAdapter.js';
-export { MemoryAdapter } from './MemoryAdapter.js';
-export type { StorageAdapter } from './StorageAdapter.js';
-
-// Cache, Serialization & Managers
-export { CacheManager } from './CacheManager.js';
-export { Deserializer } from './Deserializer.js';
-export { QuotaManager } from './QuotaManager.js';
-export { RecoveryManager } from './RecoveryManager.js';
-export { Serializer } from './Serializer.js';
-export { StorageTransaction } from './StorageTransaction.js';
-
-// Configuration
-export {
-  DEFAULT_STORAGE_CONFIG,
-  type ResolvedStorageConfig,
-  type StorageConfig,
-  resolveStorageConfig,
-} from './StorageConfig.js';
-
-// Error Hierarchy
-export {
-  StorageConnectionError,
-  StorageDeleteError,
-  StorageError,
-  StorageInitializationError,
-  StorageQuotaError,
-  StorageReadError,
-  StorageRecoveryError,
-  StorageSerializationError,
-  StorageTransactionError,
-  StorageWriteError,
-} from './StorageError.js';
-
-// Types & Contracts
-export type {
-  BatchOperation,
-  QuotaInfo,
-  StorageEntry,
-  StorageHealthReport,
-  StorageStats,
-  StorageValue,
-} from './types.js';
+export * from './types.js';
+export * from './StorageConfig.js';
+export * from './StorageError.js';
+export * from './StorageAdapter.js';
+export * from './MemoryAdapter.js';
+export * from './IndexedDBAdapter.js';
+export * from './LocalStorageAdapter.js';
+export * from './StorageDriverPool.js';
+export * from './SchemaMigrationEngine.js';
+export * from './StorageQueryIterator.js';
+export * from './DataIntegrityManager.js';
+export * from './StorageTransaction.js';
+export * from './CacheManager.js';
+export * from './QuotaManager.js';
+export * from './RecoveryManager.js';
+export * from './Serializer.js';
+export * from './Deserializer.js';
+export * from './StorageEngine.js';

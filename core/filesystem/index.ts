@@ -21,6 +21,12 @@ export { DirectoryTree } from './DirectoryTree.js';
 export { FileSearch } from './FileSearch.js';
 export { FileWatcherManager } from './FileWatcher.js';
 export { PathResolver } from './PathResolver.js';
+export { InodeTable, type InodeDescriptor } from './InodeTable.js';
+export { FileLockManager, type FileLock, type FileLockType } from './FileLockManager.js';
+export { StreamBuffer } from './StreamBuffer.js';
+export { ChunkedIO, type BlockChunk } from './ChunkedIO.js';
+export { VFSMountManager, type MountPoint, type MountType } from './VFSMountManager.js';
+export { FileSystemIntegrityChecker, type FSCKReport, type FSCKIssue } from './FileSystemIntegrityChecker.js';
 
 // Configuration
 export {

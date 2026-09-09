@@ -13,3 +13,6 @@ export * from './BaseSystemService.js';
 export * from './ServiceRegistry.js';
 export * from './BuiltinServices.js';
 export * from './ServiceManager.js';
+export * from './ServiceHealthProbe.js';
+export * from './ServiceConfigSchema.js';
+export * from './ServiceRPC.js';

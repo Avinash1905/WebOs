@@ -14,3 +14,7 @@ export * from './AppLauncher.js';
 export * from './AppTerminator.js';
 export * from './ApplicationManager.js';
 export * from './ApplicationRuntime.js';
+export * from './AppPackageValidator.js';
+export * from './AppSandboxEnvironment.js';
+export * from './MultiWindowManager.js';
+export * from './AppCrashRecovery.js';
