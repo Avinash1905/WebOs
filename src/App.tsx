@@ -1,72 +1,97 @@
 import React, { useEffect, useCallback } from 'react';
 import { DesktopShell } from './shell/desktop/DesktopShell';
 import { Taskbar } from './shell/taskbar/Taskbar';
-import { WindowContainer } from './shell/window/WindowContainer';
+import { StartMenu } from './shell/startmenu/StartMenu';
+import { AppLauncher } from './shell/launcher/AppLauncher';
+import { WindowManager } from './wm/WindowManager';
 import { useWindowStore } from './stores/windowStore';
 import { useUIStore } from './stores/uiStore';
+import { useWindowShortcuts } from './keyboard/useWindowShortcuts';
 import type { DesktopIconItem } from './types/desktop';
-import { appRegistry } from './contracts/appRegistry';
-import { DEFAULT_SYSTEM_ICONS } from './shell/desktop/defaultIcons';
+import { appRegistry, type AppDefinition } from './contracts/appRegistry';
 
 export const App: React.FC = () => {
-  const { windows, openWindow } = useWindowStore();
+  const { openWindow } = useWindowStore();
   const { theme } = useUIStore();
+
+  // Activate global keyboard shortcuts (Alt+Tab, Alt+F4, Win+D, Win+Arrows)
+  useWindowShortcuts();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
 
-    // Register default system apps into the app registry for Member 3
-    DEFAULT_SYSTEM_ICONS.forEach((icon) => {
-      appRegistry.registerApplication({
-        id: icon.appId,
-        name: icon.title,
-        category: 'System',
-        icon: icon.icon,
-        iconColor: icon.iconColor,
-        version: '1.0.0',
-        showOnDesktop: true,
-        isPinnedToTaskbar: true,
+    // Initial welcoming window for demonstration
+    const pcApp = appRegistry.getApplication('pc');
+    if (pcApp) {
+      openWindow({
+        id: 'win-welcome',
+        appId: pcApp.id,
+        title: 'This PC - System Overview',
+        icon: pcApp.icon,
+        iconColor: pcApp.iconColor,
+        bounds: {
+          x: 180,
+          y: 80,
+          width: 780,
+          height: 500,
+        },
       });
-    });
-
-    // Open initial welcoming window for demonstration
-    openWindow({
-      id: 'win-welcome',
-      appId: 'pc',
-      title: 'This PC - System Overview',
-      icon: DEFAULT_SYSTEM_ICONS[0].icon,
-      iconColor: DEFAULT_SYSTEM_ICONS[0].iconColor,
-      bounds: {
-        x: 180,
-        y: 90,
-        width: 720,
-        height: 480,
-      },
-    });
+    }
   }, [theme, openWindow]);
 
-  const handleOpenApp = useCallback(
-    (item: DesktopIconItem) => {
+  const handleOpenAppDef = useCallback(
+    (app: AppDefinition) => {
       openWindow({
-        id: `win-${item.appId}`,
-        appId: item.appId,
-        title: item.title,
-        icon: item.icon,
-        iconColor: item.iconColor,
+        id: `win-${app.id}-${Date.now()}`,
+        appId: app.id,
+        title: app.name,
+        icon: app.icon,
+        iconColor: app.iconColor,
+        bounds: app.defaultBounds,
+        minWidth: app.minWidth,
+        minHeight: app.minHeight,
+        maxWidth: app.maxWidth,
+        maxHeight: app.maxHeight,
+        canMaximize: app.canMaximize,
+        canMinimize: app.canMinimize,
+        canClose: app.canClose,
+        canResize: app.canResize,
       });
     },
     [openWindow]
   );
 
+  const handleOpenDesktopIcon = useCallback(
+    (item: DesktopIconItem) => {
+      const appDef = appRegistry.getApplication(item.appId);
+      if (appDef) {
+        handleOpenAppDef(appDef);
+      } else {
+        openWindow({
+          id: `win-${item.appId}`,
+          appId: item.appId,
+          title: item.title,
+          icon: item.icon,
+          iconColor: item.iconColor,
+        });
+      }
+    },
+    [handleOpenAppDef, openWindow]
+  );
+
   return (
-    <DesktopShell onOpenApp={handleOpenApp}>
-      {/* Windows Manager Layer */}
-      {windows.map((win) => (
-        <WindowContainer key={win.id} window={win} />
-      ))}
+    <DesktopShell onOpenApp={handleOpenDesktopIcon}>
+      {/* Complete Window Manager Subsystem */}
+      <WindowManager />
+
+      {/* Start Menu Floating Layer */}
+      <StartMenu onOpenApp={handleOpenAppDef} />
+
+      {/* Fullscreen Application Launchpad */}
+      <AppLauncher onOpenApp={handleOpenAppDef} />
 
       {/* Taskbar */}
-      <Taskbar onOpenApp={handleOpenApp} />
+      <Taskbar onOpenApp={handleOpenDesktopIcon} />
     </DesktopShell>
   );
 };

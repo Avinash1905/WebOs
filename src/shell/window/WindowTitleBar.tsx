@@ -1,5 +1,5 @@
 import React from 'react';
-import { Minus, Square, Copy, X } from 'lucide-react';
+import { Minus, Square, Copy, Maximize2, Minimize2, X } from 'lucide-react';
 import type { WindowInstance } from '../../types/window';
 
 export interface WindowTitleBarProps {
@@ -7,8 +7,9 @@ export interface WindowTitleBarProps {
   onMinimize: () => void;
   onMaximize: () => void;
   onRestore: () => void;
+  onToggleFullscreen?: () => void;
   onClose: () => void;
-  onMouseDown?: (e: React.MouseEvent) => void;
+  onPointerDownDrag?: (e: React.PointerEvent) => void;
 }
 
 export const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
@@ -16,14 +17,19 @@ export const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
   onMinimize,
   onMaximize,
   onRestore,
+  onToggleFullscreen,
   onClose,
-  onMouseDown,
+  onPointerDownDrag,
 }) => {
-  const isMaximized = win.state === 'maximized';
+  const isMaximized = win.state === 'maximized' || win.state.startsWith('snapped-');
+  const isFullscreen = win.state === 'fullscreen';
 
-  const handleDoubleClick = () => {
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    if (e.target !== e.currentTarget && (e.target as HTMLElement).closest('button')) {
+      return;
+    }
     if (win.canMaximize !== false) {
-      if (isMaximized) {
+      if (isMaximized || isFullscreen) {
         onRestore();
       } else {
         onMaximize();
@@ -41,7 +47,7 @@ export const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
   return (
     <div
       className="os-window-titlebar"
-      onMouseDown={onMouseDown}
+      onPointerDown={onPointerDownDrag}
       onDoubleClick={handleDoubleClick}
       data-testid={`window-titlebar-${win.id}`}
     >
@@ -55,9 +61,18 @@ export const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
           </div>
         )}
         <span className="os-window-titlebar__title">{win.title}</span>
+        {win.state.startsWith('snapped-') && (
+          <span className="os-window-titlebar__snap-badge">
+            {win.state.replace('snapped-', '')}
+          </span>
+        )}
       </div>
 
-      <div className="os-window-titlebar__controls" onMouseDown={(e) => e.stopPropagation()}>
+      <div
+        className="os-window-titlebar__controls"
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+      >
         {win.canMinimize !== false && (
           <button
             type="button"
@@ -79,6 +94,18 @@ export const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
             onClick={isMaximized ? onRestore : onMaximize}
           >
             {isMaximized ? <Copy size={12} /> : <Square size={12} />}
+          </button>
+        )}
+
+        {onToggleFullscreen && (
+          <button
+            type="button"
+            aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            className="os-window-control os-window-control--fullscreen"
+            data-testid="window-fullscreen-button"
+            onClick={onToggleFullscreen}
+          >
+            {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
           </button>
         )}
 

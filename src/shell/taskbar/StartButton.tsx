@@ -1,13 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
-import { useTaskbarStore } from '../../stores/taskbarStore';
+import { useStartMenuStore } from '../../stores/startMenuStore';
 
 export interface StartButtonProps {
   className?: string;
 }
 
 export const StartButton: React.FC<StartButtonProps> = ({ className }) => {
-  const { isStartMenuOpen, toggleStartMenu } = useTaskbarStore();
+  const { isOpen: isStartMenuOpen, toggleStartMenu } = useStartMenuStore();
 
   return (
     <button
@@ -20,7 +20,7 @@ export const StartButton: React.FC<StartButtonProps> = ({ className }) => {
         isStartMenuOpen && 'os-start-button--active',
         className
       )}
-      onClick={() => toggleStartMenu()}
+      onClick={toggleStartMenu}
     >
       <div className="os-start-button__logo">
         <span className="os-start-button__tile os-start-button__tile--1" />

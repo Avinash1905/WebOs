@@ -1,9 +1,12 @@
 import React from 'react';
 import clsx from 'clsx';
+import { Rocket } from 'lucide-react';
 import { StartButton } from './StartButton';
 import { TaskbarAppArea } from './TaskbarAppArea';
 import { SystemTray } from './SystemTray';
+import { Tooltip } from '../../ui/Tooltip/Tooltip';
 import { useUIStore } from '../../stores/uiStore';
+import { useLauncherStore } from '../../stores/launcherStore';
 import type { DesktopIconItem } from '../../types/desktop';
 import './taskbar.css';
 
@@ -14,20 +17,33 @@ export interface TaskbarProps {
 
 export const Taskbar: React.FC<TaskbarProps> = ({ onOpenApp, className }) => {
   const { dockPosition } = useUIStore();
+  const { toggleLauncher, isOpen: isLauncherOpen } = useLauncherStore();
 
   return (
     <footer
-      className={clsx(
-        'os-taskbar',
-        `os-taskbar--${dockPosition}`,
-        className
-      )}
+      className={clsx('os-taskbar', `os-taskbar--${dockPosition}`, className)}
       role="banner"
       aria-label="WebOS Taskbar"
       data-testid="taskbar"
     >
       <div className="os-taskbar__left">
         <StartButton />
+
+        <Tooltip content="Open Launchpad (All Applications)" position="top">
+          <button
+            type="button"
+            aria-label="Application Launcher"
+            aria-expanded={isLauncherOpen}
+            data-testid="taskbar-launcher-btn"
+            className={clsx(
+              'os-taskbar-launcher-btn',
+              isLauncherOpen && 'os-taskbar-launcher-btn--active'
+            )}
+            onClick={toggleLauncher}
+          >
+            <Rocket size={18} />
+          </button>
+        </Tooltip>
       </div>
 
       <div className="os-taskbar__center">

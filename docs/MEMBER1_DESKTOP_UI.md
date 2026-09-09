@@ -1,96 +1,101 @@
 # Member 1: Desktop Environment & UI System Documentation
 
 ## Overview
-Member 1 is responsible for the visual desktop environment, taskbar, system tray, window container shell, theme system, and shared reusable UI component library for WebOS.
+Member 1 is responsible for the visual desktop environment, UI infrastructure, window manager, taskbar, Start Menu, Application Launcher, themes, and shared reusable component library for WebOS.
 
 ---
 
-## 1. Desktop Shell Architecture
-The desktop shell runs as the foundation layer (`src/shell/desktop/`):
-- **`DesktopShell`**: Manages the full browser viewport, background wallpaper renderer, ambient gradient backdrop, and layers foreground windows and taskbar.
-- **`DesktopSurface`**: Handles click interactions, desktop-level context menus (Refresh, New Folder, Wallpaper switch, Display settings), and icon grid arrangement.
-- **`DesktopGrid`**: Responsive CSS grid that hosts desktop icons with arrow-key keyboard navigation (`Up`, `Down`, `Home`, `End`).
-- **`DesktopIcon`**: Accessible desktop icon supporting single-click select, double-click launch, Enter/Space launch, badge counts, custom icon colors, and right-click context menus.
+## 1. Window Manager Subsystem (`src/wm/`)
+
+### Architecture
+- **`WindowManager`**: Renders all open application window instances according to their dynamic `zIndex` layering, mounts the active `SnapPreview` overlay, and integrates the `AltTabSwitcher`.
+- **`useWindowDrag`**: High-performance pointer capture dragging engine with smooth coordinate updates, viewport boundary clamping, and proximity detection for edge/corner snap zones.
+- **`useWindowResize`**: 8-direction resize hook (`n`, `s`, `e`, `w`, `ne`, `nw`, `se`, `sw`) enforcing minimum width (320px) and height (200px) constraints without layout jumping.
+- **`SnapPreview`**: Translucent acrylic overlay displaying real-time snap boundaries when dragging windows near viewport edges.
+- **`WindowGeometry`**: Core mathematical utilities for geometry preservation, viewport boundary clamping, and restore state management.
+
+### Window States & Lifecycle
+- `normal`: Floating, draggable, and resizable window with custom bounds.
+- `maximized`: Full viewport display (accounting for taskbar height).
+- `fullscreen`: True WebOS window fullscreen mode covering the entire viewport (`100vw x 100vh`).
+- `snapped-left` / `snapped-right`: 50% split screen tiling.
+- `snapped-top-left` / `snapped-top-right` / `snapped-bottom-left` / `snapped-bottom-right`: Quarter screen corner snapping.
+- `minimized`: Window hidden from desktop, represented with active pills on the taskbar.
 
 ---
 
-## 2. Taskbar & System Tray
-Located at `src/shell/taskbar/`:
-- **`Taskbar`**: Glassmorphic pinned footer supporting both `bottom` and `top` dock placements.
-- **`StartButton`**: WebOS styled logo button with active state and keyboard accessibility.
-- **`TaskbarAppArea`**: Displays running application items with focus pills, minimized state indicators, and window toggle actions.
-- **`SystemTray`**: Real-time status indicators for Network (Wi-Fi), Audio (Volume/Mute toggle), Battery status, and Notification Center with unread badges.
-- **`Clock`**: Live digital clock with formatted date and detailed full-date hover tooltips.
+## 2. Desktop Navigation & Start Menu (`src/shell/startmenu/`)
+
+- **`StartMenu`**: Floating glassmorphic acrylic menu anchored above the taskbar Start button.
+- **`StartMenuHeader`**: Displays current active user profile, status badge, role, and quick settings trigger.
+- **`StartMenuSearch`**: Live fuzzy search indexing application names, descriptions, categories, and keyword aliases.
+- **`StartMenuPinned`**: Grid of pinned applications with customized color themes and launch triggers.
+- **`StartMenuAllApps`**: Alphabetical and categorized listing of all registered applications.
+- **`StartMenuRecent`**: Recently modified documents and activities.
+- **`StartMenuFooter`**: Quick power controls (Lock Screen, Sign Out, Restart WebOS, Shut Down).
 
 ---
 
-## 3. Window Container Foundation
-Located at `src/shell/window/`:
-- **`WindowContainer`**: Reusable application window host container.
-- **`WindowTitleBar`**: Application icon, title text, and controls (`Minimize`, `Maximize` / `Restore`, `Close`). Supports double-click to maximize/restore.
-- **`WindowContent`**: Sandboxed scrollable application viewport.
-- **State Management**: Zustand store (`useWindowStore`) handles z-index elevation, focus switching, minimizing, and cascading placement.
+## 3. Application Launcher / Launchpad (`src/shell/launcher/`)
+
+- **`AppLauncher`**: Full-screen modal launchpad view with dark blur backdrop.
+- **`LauncherFilter`**: Category filtering (`All`, `Favorites`, `System`, `Productivity`, `Development`, `Utilities`) and Grid / List view mode switcher.
+- **`LauncherGrid`**: High-res card grid with favorite star toggling and hover micro-animations.
+- **`LauncherList`**: Detailed table view displaying version badges, metadata, and quick launch actions.
 
 ---
 
-## 4. Shared UI Component Library
-Located at `src/ui/`:
-- **`Button`**: Variants (`primary`, `secondary`, `ghost`, `danger`, `outline`), loading spinner, icon slots.
-- **`IconButton`**: Accessible icon button with tooltips and active states.
-- **`Tooltip`**: Micro-animated hover/focus tooltip with multi-directional anchoring (`top`, `bottom`, `left`, `right`).
-- **`Panel`**: Acrylic blurred glassmorphic surface panel with customizable radii and elevations.
-- **`Badge`**: Status badge and notification count pill (`primary`, `secondary`, `success`, `warning`, `danger`, `dot`).
-- **`Input`**: Text input with icon slots and active glow borders.
-- **`Dropdown`**: Popover menu with keyboard and outside-click dismissal.
-- **`ContextMenu`**: Fixed-position context menu with boundary safety checks and Escape key listener.
-- **`Separator`**: Semantic horizontal/vertical line divider.
+## 4. Enhanced Taskbar & Application Grouping (`src/shell/taskbar/`)
+
+- **Application Grouping**: Automatically groups multiple window instances of the same application under a single taskbar button with count badges.
+- **Running & Focused Indicators**: Shows active pill beneath focused window and running dots for open background apps.
+- **Taskbar Context Menu**: Right-click menu providing `Open`, `New Window`, `Pin / Unpin to Taskbar`, `Close Window`, and `Close All (N)` actions.
+- **Launcher Trigger**: Dedicated rocket button for instant Launchpad access.
 
 ---
 
-## 5. Integration Contracts & Boundaries
+## 5. Global Keyboard Window Management (`src/keyboard/`)
 
-### Member 2 (OS Core) Boundary — `src/contracts/osCore.ts`
-Member 1 accesses OS Core through `IOSCoreService`:
+| Shortcut | Action |
+| :--- | :--- |
+| `Alt + Tab` | Cycles through open running applications via interactive overlay modal |
+| `Alt + F4` | Closes the currently active focused window |
+| `Win + D` / `Alt + D` | Shows / Hides desktop (minimizes or restores all open windows) |
+| `Win + Up` | Maximizes the active focused window |
+| `Win + Down` | Restores or minimizes the active focused window |
+| `Win + Left` | Snaps active window to the left 50% viewport split |
+| `Win + Right` | Snaps active window to the right 50% viewport split |
+| `Escape` | Dismisses active menus, Start Menu, Launchpad, and Alt-Tab switcher |
+
+---
+
+## 6. Application Integration Contract (`src/contracts/appRegistry.ts`)
+
+Member 3 applications integrate with WebOS by registering their app manifest:
 ```typescript
-export interface IOSCoreService {
-  launchApplication(appId: string, args?: Record<string, unknown>): Promise<{ pid: number; success: boolean }>;
-  terminateProcess(pid: number): Promise<boolean>;
-  getRunningProcesses(): Promise<ProcessInfo[]>;
-  getFileSystem(): Promise<FileSystemNode[]>;
-  subscribeToSystemEvents(listener: (event: SystemEventPayload) => void): () => void;
-}
-```
+import { appRegistry } from './contracts/appRegistry';
 
-### Member 3 (Applications) Boundary — `src/contracts/appRegistry.ts`
-Member 3 registers applications into WebOS via `appRegistry`:
-```typescript
 appRegistry.registerApplication({
   id: 'my-app',
-  name: 'My Application',
+  name: 'My Custom App',
   category: 'Productivity',
-  icon: MyAppIcon,
+  icon: MyIcon,
+  iconColor: '#38bdf8',
+  description: 'Application description...',
+  version: '1.0.0',
+  defaultBounds: { width: 800, height: 500 },
   showOnDesktop: true,
   isPinnedToTaskbar: true,
-  component: MyAppView
+  component: MyAppComponent,
 });
 ```
 
-### Member 4 (Backend / Persistence) Boundary — `src/contracts/backend.ts`
-Member 1 synchronizes settings and notifications via `IBackendSyncService`:
-```typescript
-export interface IBackendSyncService {
-  getUserProfile(): Promise<UserProfile>;
-  loadPreferences(): Promise<Partial<UIPreferences>>;
-  savePreferences(prefs: Partial<UIPreferences>): Promise<boolean>;
-  getNotifications(): Promise<SystemNotification[]>;
-}
-```
-
 ---
 
-## 6. Testing & Quality Assurance
-Run tests:
+## 7. Testing & Verification
+
+Run all test suites:
 ```bash
 npm run test
 ```
-All components are tested with Vitest and `@testing-library/react`.
+All 11 test suites and 44 tests pass with 100% success.

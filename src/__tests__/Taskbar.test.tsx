@@ -1,15 +1,14 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Taskbar } from '../shell/taskbar/Taskbar';
-import { useTaskbarStore } from '../stores/taskbarStore';
+import { useStartMenuStore } from '../stores/startMenuStore';
 import { useWindowStore } from '../stores/windowStore';
 
 describe('Taskbar & System Tray', () => {
   beforeEach(() => {
-    useTaskbarStore.setState({
-      isStartMenuOpen: false,
-      pinnedAppIds: ['pc', 'terminal'],
-      activeTrayMenu: null,
+    useStartMenuStore.setState({
+      isOpen: false,
+      searchQuery: '',
     });
     useWindowStore.setState({
       windows: [],
@@ -37,10 +36,10 @@ describe('Taskbar & System Tray', () => {
 
     fireEvent.click(startBtn);
     expect(startBtn).toHaveAttribute('aria-expanded', 'true');
-    expect(useTaskbarStore.getState().isStartMenuOpen).toBe(true);
+    expect(useStartMenuStore.getState().isOpen).toBe(true);
 
     fireEvent.click(startBtn);
-    expect(useTaskbarStore.getState().isStartMenuOpen).toBe(false);
+    expect(useStartMenuStore.getState().isOpen).toBe(false);
   });
 
   it('renders running window buttons in the taskbar app area', () => {
@@ -49,11 +48,13 @@ describe('Taskbar & System Tray', () => {
         {
           id: 'win-1',
           appId: 'terminal',
-          title: 'Terminal - bash',
+          title: 'Terminal',
           state: 'normal',
           bounds: { x: 100, y: 100, width: 600, height: 400 },
           isFocused: true,
           zIndex: 101,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
         },
       ],
       activeWindowId: 'win-1',
@@ -65,7 +66,7 @@ describe('Taskbar & System Tray', () => {
 
     const taskbarApp = screen.getByTestId('taskbar-app-terminal');
     expect(taskbarApp).toBeInTheDocument();
-    expect(screen.getByText('Terminal - bash')).toBeInTheDocument();
+    expect(screen.getByText('Terminal')).toBeInTheDocument();
 
     // Clicking active taskbar app minimizes it
     fireEvent.click(taskbarApp);

@@ -95,6 +95,29 @@
   transform: scale(0.9);
 }
 
+/* Launcher Button */
+.os-taskbar-launcher-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--os-radius-sm);
+  color: var(--os-text-secondary);
+  transition: all var(--os-transition-fast);
+}
+
+.os-taskbar-launcher-btn:hover {
+  background: var(--os-surface-hover);
+  color: var(--os-color-brand);
+}
+
+.os-taskbar-launcher-btn--active {
+  background: var(--os-surface-active);
+  color: var(--os-color-brand);
+  box-shadow: inset 0 0 0 1px var(--os-border-focus);
+}
+
 /* App Area */
 .os-taskbar-app-area {
   display: flex;
@@ -121,6 +144,10 @@
   background: var(--os-surface-hover);
 }
 
+.os-taskbar-item--open {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .os-taskbar-item--focused {
   background: var(--os-surface-active);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
@@ -143,6 +170,14 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.os-taskbar-item__group-badge {
+  font-size: 0.625rem;
+  padding: 1px 5px;
+  height: 16px;
+  min-width: 16px;
+  margin-left: 2px;
 }
 
 .os-taskbar-item__pill {

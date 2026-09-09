@@ -1,0 +1,83 @@
+.os-alt-tab-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--os-z-modal);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: os-alt-tab-fade 120ms ease-out forwards;
+}
+
+.os-alt-tab-modal {
+  background: var(--os-surface-elevated);
+  backdrop-filter: var(--os-blur-acrylic);
+  -webkit-backdrop-filter: var(--os-blur-acrylic);
+  border: 1px solid var(--os-surface-glass-border);
+  border-radius: var(--os-radius-xl);
+  padding: var(--os-space-4);
+  box-shadow: var(--os-shadow-lg);
+  max-width: 80vw;
+  max-height: 70vh;
+  overflow-x: auto;
+}
+
+.os-alt-tab-grid {
+  display: flex;
+  align-items: center;
+  gap: var(--os-space-3);
+}
+
+.os-alt-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--os-space-2);
+  width: 110px;
+  height: 100px;
+  padding: var(--os-space-3);
+  border-radius: var(--os-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--os-transition-fast);
+}
+
+.os-alt-tab-item:hover {
+  background: var(--os-surface-hover);
+}
+
+.os-alt-tab-item--selected {
+  background: var(--os-surface-active);
+  border-color: var(--os-border-focus);
+  box-shadow: 0 0 16px var(--os-color-brand-glow);
+  transform: scale(1.05);
+}
+
+.os-alt-tab-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.os-alt-tab-item__title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--os-text-primary);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+@keyframes os-alt-tab-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

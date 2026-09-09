@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface TaskbarAppItem {
   id: string;
   appId: string;
   title: string;
-  icon: LucideIcon | string;
+  icon?: LucideIcon | string | ReactNode;
   iconColor?: string;
   isPinned: boolean;
   isOpen: boolean;
@@ -15,7 +16,7 @@ export interface TaskbarAppItem {
 export interface SystemTrayItem {
   id: string;
   label: string;
-  icon: LucideIcon | string;
+  icon: LucideIcon | string | ReactNode;
   statusText?: string;
   isActive?: boolean;
   onClick?: () => void;

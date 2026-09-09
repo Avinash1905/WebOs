@@ -13,6 +13,8 @@ describe('Window Container & Controls', () => {
     bounds: { x: 50, y: 50, width: 640, height: 480 },
     isFocused: true,
     zIndex: 100,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
   beforeEach(() => {

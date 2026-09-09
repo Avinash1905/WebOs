@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface DesktopIconItem {
   id: string;
   appId: string;
   title: string;
-  icon: LucideIcon | string;
+  icon?: LucideIcon | string | ReactNode;
   iconColor?: string;
   gridRow?: number;
   gridCol?: number;
