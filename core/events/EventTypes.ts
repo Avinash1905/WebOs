@@ -72,6 +72,9 @@ export type ApplicationEventType =
 // 5. User & Session Events
 // ==========================================
 export const USER_EVENTS = {
+  USER_CREATED: 'USER_CREATED',
+  USER_UPDATED: 'USER_UPDATED',
+  USER_DELETED: 'USER_DELETED',
   USER_LOGIN: 'USER_LOGIN',
   USER_LOGOUT: 'USER_LOGOUT',
   SESSION_STARTED: 'SESSION_STARTED',

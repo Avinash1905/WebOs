@@ -82,6 +82,8 @@ export function createFileMetadata(
     extension: ext || undefined,
     hidden: name.startsWith('.'),
     readonly: false,
+    ownerId: options?.ownerId,
+    mode: options?.mode ?? 0o644,
     customMetadata: options?.customMetadata,
   };
 }
@@ -92,6 +94,7 @@ export function createFileMetadata(
 export function createDirectoryMetadata(
   path: string,
   parentId: string | null,
+  options?: { ownerId?: string; mode?: number },
   customId?: string
 ): FileMetadata {
   const normalizedPath = PathResolver.normalize(path);
@@ -110,5 +113,7 @@ export function createDirectoryMetadata(
     mimeType: 'inode/directory',
     hidden: name.startsWith('.') && name !== '/',
     readonly: PathResolver.isRoot(normalizedPath),
+    ownerId: options?.ownerId,
+    mode: options?.mode ?? 0o755,
   };
 }

@@ -1,11 +1,9 @@
-/**
- * @file FileSystem.ts
- * @description Central Virtual File System (VFS) runtime engine for WebOS.
- */
-
 import type { EventBus } from '../events/index.js';
 import { BaseSystemService } from '../kernel/Service.js';
+import type { PermissionManager, PermissionTarget, PermissionType, SecurityContext } from '../permissions/index.js';
 import { type NamespaceStorage, StorageEngine } from '../storage/index.js';
+import type { TrashManager } from '../trash/index.js';
+import type { UserManager } from '../users/index.js';
 import { DirectoryTree } from './DirectoryTree.js';
 import {
   calculateContentSize,
@@ -32,6 +30,7 @@ import {
 import { FileWatcherManager } from './FileWatcher.js';
 import { PathResolver } from './PathResolver.js';
 import type {
+  CreateDirectoryOptions,
   CreateFileOptions,
   DeleteOptions,
   FileContent,
@@ -49,7 +48,11 @@ import type {
 export class FileSystem extends BaseSystemService {
   public override readonly name = 'filesystem';
   public override readonly dependencies: readonly string[] = ['storage'];
-  public override readonly optionalDependencies: readonly string[] = ['event-bus'];
+  public override readonly optionalDependencies: readonly string[] = [
+    'event-bus',
+    'permissions',
+    'users',
+  ];
 
   private readonly _config: ResolvedFileSystemConfig;
   private readonly _tree = new DirectoryTree();
@@ -60,11 +63,17 @@ export class FileSystem extends BaseSystemService {
   private _metaStorage!: NamespaceStorage;
   private _contentStorage!: NamespaceStorage;
   private _eventBus?: EventBus;
+  private _permissionManager?: PermissionManager;
+  private _trashManager?: TrashManager;
+  private _userManager?: UserManager;
 
   constructor(config?: FileSystemConfig) {
     super();
     this._config = resolveFileSystemConfig(config);
     this._eventBus = config?.eventBus;
+    this._permissionManager = config?.permissionManager;
+    this._trashManager = config?.trashManager;
+    this._userManager = config?.userManager;
 
     if (config?.storage) {
       this.attachStorage(config.storage);
@@ -87,6 +96,37 @@ export class FileSystem extends BaseSystemService {
     this._eventBus = eventBus;
   }
 
+  /**
+   * Attaches a PermissionManager instance for access control.
+   */
+  public attachPermissionManager(permissionManager: PermissionManager): void {
+    this._permissionManager = permissionManager;
+  }
+
+  /**
+   * Attaches a TrashManager instance for soft-delete recovery.
+   */
+  public attachTrashManager(trashManager: TrashManager): void {
+    this._trashManager = trashManager;
+  }
+
+  /**
+   * Attaches a UserManager instance for user identity and ownership.
+   */
+  public attachUserManager(userManager: UserManager): void {
+    this._userManager = userManager;
+  }
+
+  private async _assertPermission(
+    context: Partial<SecurityContext> | undefined,
+    target: PermissionTarget,
+    permission: PermissionType
+  ): Promise<void> {
+    if (this._permissionManager) {
+      await this._permissionManager.assertPermission(context ?? {}, target, permission);
+    }
+  }
+
   // =========================================================================
   // File CRUD Operations
   // =========================================================================
@@ -96,9 +136,14 @@ export class FileSystem extends BaseSystemService {
    *
    * @param path - Normalized destination path for the file.
    * @param options - Options including content, MIME type, and overwrite flag.
+   * @param context - Optional security context for permission validation.
    * @returns Metadata for the created file.
    */
-  public async createFile(path: string, options?: CreateFileOptions): Promise<FileMetadata> {
+  public async createFile(
+    path: string,
+    options?: CreateFileOptions,
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
     const normalized = PathResolver.normalize(path);
     if (PathResolver.isRoot(normalized)) {
       throw new RootOperationError('createFile', 'Cannot create file at root path.');
@@ -116,18 +161,45 @@ export class FileSystem extends BaseSystemService {
       throw new NotADirectoryError(parentPath);
     }
 
+    // Permission Check: require WRITE on parent directory
+    await this._assertPermission(
+      context,
+      {
+        id: parent.id,
+        path: parentPath,
+        ownerId: parent.ownerId,
+        mode: parent.mode,
+        isDirectory: true,
+      },
+      'WRITE'
+    );
+
     const existing = this._tree.get(normalized);
     if (existing) {
       if (existing.type === 'directory') {
         throw new IsADirectoryError(normalized);
       }
       if (options?.overwrite) {
-        return this.writeFile(normalized, options.content ?? '', { encoding: options.encoding });
+        return this.writeFile(
+          normalized,
+          options.content ?? '',
+          { encoding: options.encoding },
+          context
+        );
       }
       throw new FileAlreadyExistsError(normalized);
     }
 
-    const metadata = createFileMetadata(normalized, parent.id, options);
+    const resolvedOwnerId =
+      options?.ownerId ??
+      context?.userId ??
+      this._userManager?.getCurrentUser()?.id ??
+      'user';
+
+    const metadata = createFileMetadata(normalized, parent.id, {
+      ...options,
+      ownerId: resolvedOwnerId,
+    });
 
     // 1. Persist metadata
     await this._metaStorage.set(metadata.id, metadata);
@@ -160,12 +232,21 @@ export class FileSystem extends BaseSystemService {
   /**
    * Creates a new directory at the specified path.
    */
-  public async createDirectory(path: string): Promise<FileMetadata> {
+  public async createDirectory(
+    path: string,
+    options?: CreateDirectoryOptions,
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
     const normalized = PathResolver.normalize(path);
     if (PathResolver.isRoot(normalized)) {
       const root = this._tree.getRoot();
       if (root) return root;
-      const newRoot = createDirectoryMetadata('/', null, 'root_dir');
+      const newRoot = createDirectoryMetadata(
+        '/',
+        null,
+        { ownerId: 'system', mode: 0o755 },
+        'root_dir'
+      );
       await this._metaStorage.set(newRoot.id, newRoot);
       this._tree.add(newRoot);
       return newRoot;
@@ -175,7 +256,17 @@ export class FileSystem extends BaseSystemService {
     PathResolver.validateName(name);
 
     const parentPath = PathResolver.dirname(normalized);
-    const parent = this._tree.get(parentPath);
+    let parent = this._tree.get(parentPath);
+
+    if (!parent) {
+      if (options?.recursive) {
+        await this.ensureDirectoryHierarchy(parentPath, context);
+        parent = this._tree.get(parentPath);
+      } else {
+        throw new DirectoryNotFoundError(parentPath);
+      }
+    }
+
     if (!parent) {
       throw new DirectoryNotFoundError(parentPath);
     }
@@ -183,15 +274,40 @@ export class FileSystem extends BaseSystemService {
       throw new NotADirectoryError(parentPath);
     }
 
+    // Permission check on parent directory
+    await this._assertPermission(
+      context,
+      {
+        id: parent.id,
+        path: parentPath,
+        ownerId: parent.ownerId,
+        mode: parent.mode,
+        isDirectory: true,
+      },
+      'WRITE'
+    );
+
     const existing = this._tree.get(normalized);
     if (existing) {
       if (existing.type === 'directory') {
+        if (options?.recursive) {
+          return existing;
+        }
         throw new DirectoryAlreadyExistsError(normalized);
       }
       throw new FileAlreadyExistsError(normalized);
     }
 
-    const metadata = createDirectoryMetadata(normalized, parent.id);
+    const resolvedOwnerId =
+      options?.ownerId ??
+      context?.userId ??
+      this._userManager?.getCurrentUser()?.id ??
+      'user';
+
+    const metadata = createDirectoryMetadata(normalized, parent.id, {
+      ownerId: resolvedOwnerId,
+      mode: options?.mode ?? 0o755,
+    });
 
     // 1. Persist metadata
     await this._metaStorage.set(metadata.id, metadata);
@@ -221,7 +337,8 @@ export class FileSystem extends BaseSystemService {
    */
   public async readFile(
     path: string,
-    options?: { encoding?: FileEncoding }
+    options?: { encoding?: FileEncoding },
+    context?: Partial<SecurityContext>
   ): Promise<string | Uint8Array | unknown> {
     const normalized = PathResolver.normalize(path);
     const node = this._tree.get(normalized);
@@ -231,6 +348,19 @@ export class FileSystem extends BaseSystemService {
     if (node.type === 'directory') {
       throw new IsADirectoryError(normalized);
     }
+
+    // Permission check
+    await this._assertPermission(
+      context,
+      {
+        id: node.id,
+        path: normalized,
+        ownerId: node.ownerId,
+        mode: node.mode,
+        isDirectory: false,
+      },
+      'READ'
+    );
 
     const raw = await this._contentStorage.get<unknown>(node.id);
     const encoding = options?.encoding ?? 'utf-8';
@@ -274,18 +404,36 @@ export class FileSystem extends BaseSystemService {
   public async writeFile(
     path: string,
     content: FileContent,
-    options?: { encoding?: FileEncoding }
+    options?: { encoding?: FileEncoding },
+    context?: Partial<SecurityContext>
   ): Promise<FileMetadata> {
     const normalized = PathResolver.normalize(path);
     const existing = this._tree.get(normalized);
 
     if (!existing) {
-      return this.createFile(normalized, { content, encoding: options?.encoding });
+      return this.createFile(
+        normalized,
+        { content, encoding: options?.encoding },
+        context
+      );
     }
 
     if (existing.type === 'directory') {
       throw new IsADirectoryError(normalized);
     }
+
+    // Permission check
+    await this._assertPermission(
+      context,
+      {
+        id: existing.id,
+        path: normalized,
+        ownerId: existing.ownerId,
+        mode: existing.mode,
+        isDirectory: false,
+      },
+      'WRITE'
+    );
 
     const now = Date.now();
     const size = calculateContentSize(content);
@@ -330,19 +478,31 @@ export class FileSystem extends BaseSystemService {
   /**
    * Appends content to a file. Creates the file if it does not exist.
    */
-  public async appendFile(path: string, content: string | Uint8Array): Promise<FileMetadata> {
+  public async appendFile(
+    path: string,
+    content: string | Uint8Array,
+    options?: { encoding?: FileEncoding },
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
     const normalized = PathResolver.normalize(path);
     if (!this._tree.has(normalized)) {
-      return this.createFile(normalized, { content });
+      return this.createFile(normalized, { content }, context);
     }
 
-    const existingContent = await this.readFile(normalized, {
-      encoding: content instanceof Uint8Array ? 'binary' : 'utf-8',
-    });
+    const existingContent = await this.readFile(
+      normalized,
+      {
+        encoding: content instanceof Uint8Array ? 'binary' : 'utf-8',
+      },
+      context
+    );
 
     let combined: FileContent;
     if (content instanceof Uint8Array) {
-      const prevBuf = existingContent instanceof Uint8Array ? existingContent : new Uint8Array();
+      const prevBuf =
+        existingContent instanceof Uint8Array
+          ? existingContent
+          : new Uint8Array();
       const newBuf = new Uint8Array(prevBuf.byteLength + content.byteLength);
       newBuf.set(prevBuf, 0);
       newBuf.set(content, prevBuf.byteLength);
@@ -351,7 +511,7 @@ export class FileSystem extends BaseSystemService {
       combined = `${String(existingContent)}${content}`;
     }
 
-    return this.writeFile(normalized, combined);
+    return this.writeFile(normalized, combined, options, context);
   }
 
   /**
@@ -376,7 +536,11 @@ export class FileSystem extends BaseSystemService {
   /**
    * Lists the contents of a directory.
    */
-  public async listDirectory(path: string, options?: FileListOptions): Promise<FileMetadata[]> {
+  public async listDirectory(
+    path: string,
+    options?: FileListOptions,
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata[]> {
     const normalized = PathResolver.normalize(path);
     const parent = this._tree.get(normalized);
     if (!parent) {
@@ -385,6 +549,19 @@ export class FileSystem extends BaseSystemService {
     if (parent.type !== 'directory') {
       throw new NotADirectoryError(normalized);
     }
+
+    // Permission check
+    await this._assertPermission(
+      context,
+      {
+        id: parent.id,
+        path: normalized,
+        ownerId: parent.ownerId,
+        mode: parent.mode,
+        isDirectory: true,
+      },
+      'READ'
+    );
 
     let items = options?.recursive
       ? this._tree.getDescendants(normalized)
@@ -418,7 +595,11 @@ export class FileSystem extends BaseSystemService {
   /**
    * Renames a file or directory.
    */
-  public async rename(oldPath: string, newName: string): Promise<FileMetadata> {
+  public async rename(
+    oldPath: string,
+    newName: string,
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
     const normalizedOld = PathResolver.normalize(oldPath);
     if (PathResolver.isRoot(normalizedOld)) {
       throw new RootOperationError('rename', 'Cannot rename root directory.');
@@ -432,6 +613,33 @@ export class FileSystem extends BaseSystemService {
     }
 
     const parentPath = PathResolver.dirname(normalizedOld);
+    const parent = this._tree.get(parentPath);
+    if (parent) {
+      await this._assertPermission(
+        context,
+        {
+          id: parent.id,
+          path: parentPath,
+          ownerId: parent.ownerId,
+          mode: parent.mode,
+          isDirectory: true,
+        },
+        'WRITE'
+      );
+    }
+
+    await this._assertPermission(
+      context,
+      {
+        id: node.id,
+        path: normalizedOld,
+        ownerId: node.ownerId,
+        mode: node.mode,
+        isDirectory: node.type === 'directory',
+      },
+      'WRITE'
+    );
+
     const newPath = PathResolver.join(parentPath, newName);
 
     if (this._tree.has(newPath)) {
@@ -443,8 +651,14 @@ export class FileSystem extends BaseSystemService {
       ...node,
       name: newName,
       path: newPath,
-      extension: node.type === 'file' ? PathResolver.extname(newName) || undefined : undefined,
-      mimeType: node.type === 'file' ? PathResolver.getMimeType(newName) : 'inode/directory',
+      extension:
+        node.type === 'file'
+          ? PathResolver.extname(newName) || undefined
+          : undefined,
+      mimeType:
+        node.type === 'file'
+          ? PathResolver.getMimeType(newName)
+          : 'inode/directory',
       hidden: newName.startsWith('.'),
       updatedAt: now,
     };
@@ -514,7 +728,11 @@ export class FileSystem extends BaseSystemService {
   /**
    * Moves a file or directory to a new path.
    */
-  public async move(sourcePath: string, destinationPath: string): Promise<FileMetadata> {
+  public async move(
+    sourcePath: string,
+    destinationPath: string,
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
     const normSource = PathResolver.normalize(sourcePath);
     const normDest = PathResolver.normalize(destinationPath);
 
@@ -532,7 +750,10 @@ export class FileSystem extends BaseSystemService {
     }
 
     // Prevent moving directory into its own descendant
-    if (node.type === 'directory' && PathResolver.isSubpath(normSource, normDest)) {
+    if (
+      node.type === 'directory' &&
+      PathResolver.isSubpath(normSource, normDest)
+    ) {
       throw new DirectoryCycleError(normSource, normDest);
     }
 
@@ -556,6 +777,31 @@ export class FileSystem extends BaseSystemService {
     if (this._tree.has(targetPath)) {
       throw new FileAlreadyExistsError(targetPath);
     }
+
+    // Permission checks
+    await this._assertPermission(
+      context,
+      {
+        id: node.id,
+        path: normSource,
+        ownerId: node.ownerId,
+        mode: node.mode,
+        isDirectory: node.type === 'directory',
+      },
+      'WRITE'
+    );
+
+    await this._assertPermission(
+      context,
+      {
+        id: parent.id,
+        path: parentPath,
+        ownerId: parent.ownerId,
+        mode: parent.mode,
+        isDirectory: true,
+      },
+      'WRITE'
+    );
 
     const now = Date.now();
     const updatedMeta: FileMetadata = {
@@ -631,7 +877,12 @@ export class FileSystem extends BaseSystemService {
   /**
    * Copies a file or directory to a new path.
    */
-  public async copy(sourcePath: string, destinationPath: string): Promise<FileMetadata> {
+  public async copy(
+    sourcePath: string,
+    destinationPath: string,
+    options?: { overwrite?: boolean },
+    context?: Partial<SecurityContext>
+  ): Promise<FileMetadata> {
     const normSource = PathResolver.normalize(sourcePath);
     const normDest = PathResolver.normalize(destinationPath);
 
@@ -665,13 +916,44 @@ export class FileSystem extends BaseSystemService {
       throw new FileAlreadyExistsError(targetPath);
     }
 
+    // Permission checks: READ source, WRITE destination parent
+    await this._assertPermission(
+      context,
+      {
+        id: node.id,
+        path: normSource,
+        ownerId: node.ownerId,
+        mode: node.mode,
+        isDirectory: node.type === 'directory',
+      },
+      'READ'
+    );
+
+    await this._assertPermission(
+      context,
+      {
+        id: parent.id,
+        path: parentPath,
+        ownerId: parent.ownerId,
+        mode: parent.mode,
+        isDirectory: true,
+      },
+      'WRITE'
+    );
+
     if (node.type === 'file') {
       const content = await this._contentStorage.get<unknown>(node.id);
-      const newFile = await this.createFile(targetPath, {
-        content: content as FileContent,
-        mimeType: node.mimeType,
-        customMetadata: node.customMetadata ? { ...node.customMetadata } : undefined,
-      });
+      const newFile = await this.createFile(
+        targetPath,
+        {
+          content: content as FileContent,
+          mimeType: node.mimeType,
+          customMetadata: node.customMetadata
+            ? { ...node.customMetadata }
+            : undefined,
+        },
+        context
+      );
 
       this._eventBus?.emit(
         'FILE_COPIED',
@@ -687,12 +969,12 @@ export class FileSystem extends BaseSystemService {
       throw new DirectoryCycleError(normSource, targetPath);
     }
 
-    const newDir = await this.createDirectory(targetPath);
+    const newDir = await this.createDirectory(targetPath, {}, context);
     const children = this._tree.getChildren(normSource);
 
     for (const child of children) {
       const childDest = PathResolver.join(targetPath, child.name);
-      await this.copy(child.path, childDest);
+      await this.copy(child.path, childDest, options, context);
     }
 
     return newDir;
@@ -701,7 +983,11 @@ export class FileSystem extends BaseSystemService {
   /**
    * Deletes a file or directory.
    */
-  public async delete(path: string, options?: DeleteOptions): Promise<void> {
+  public async delete(
+    path: string,
+    options?: DeleteOptions,
+    context?: Partial<SecurityContext>
+  ): Promise<void> {
     const normalized = PathResolver.normalize(path);
     if (PathResolver.isRoot(normalized)) {
       throw new RootOperationError('delete', 'Root directory cannot be deleted.');
@@ -712,10 +998,34 @@ export class FileSystem extends BaseSystemService {
       throw new FileNotFoundError(normalized);
     }
 
-    // Check Trash hook if enabled
-    if (options?.useTrash !== false && this._config.trashHook) {
-      const handled = await this._config.trashHook(normalized, node);
-      if (handled) {
+    // Permission check
+    await this._assertPermission(
+      context,
+      {
+        id: node.id,
+        path: normalized,
+        ownerId: node.ownerId,
+        mode: node.mode,
+        isDirectory: node.type === 'directory',
+      },
+      'WRITE'
+    );
+
+    // Check Trash hook or TrashManager if enabled
+    if (options?.useTrash !== false) {
+      if (this._config.trashHook) {
+        const handled = await this._config.trashHook(normalized, node);
+        if (handled) {
+          return;
+        }
+      }
+      if (this._trashManager) {
+        await this._trashManager.moveToTrash(normalized, {
+          deletedBy:
+            context?.userId ??
+            this._userManager?.getCurrentUser()?.id ??
+            'user',
+        });
         return;
       }
     }
@@ -852,13 +1162,22 @@ export class FileSystem extends BaseSystemService {
       }
     } else {
       // Create root directory
-      const rootMeta = createDirectoryMetadata('/', null, 'root_dir');
+      const rootMeta = createDirectoryMetadata(
+        '/',
+        null,
+        { ownerId: 'system', mode: 0o755 },
+        'root_dir'
+      );
       await this._metaStorage.set(rootMeta.id, rootMeta);
       this._tree.add(rootMeta);
 
       // Create default directory structure
       for (const dirPath of this._config.defaultDirectories) {
-        await this.ensureDirectoryHierarchy(dirPath);
+        await this.ensureDirectoryHierarchy(dirPath, {
+          userId: 'system',
+          role: 'ADMIN',
+          isSystem: true,
+        });
       }
     }
   }
@@ -880,7 +1199,10 @@ export class FileSystem extends BaseSystemService {
   /**
    * Helper to ensure all ancestor directories in a path exist.
    */
-  private async ensureDirectoryHierarchy(dirPath: string): Promise<void> {
+  private async ensureDirectoryHierarchy(
+    dirPath: string,
+    context?: Partial<SecurityContext>
+  ): Promise<void> {
     const normalized = PathResolver.normalize(dirPath);
     if (this._tree.has(normalized)) {
       return;
@@ -892,7 +1214,7 @@ export class FileSystem extends BaseSystemService {
     for (const segment of segments) {
       current += '/' + segment;
       if (!this._tree.has(current)) {
-        await this.createDirectory(current);
+        await this.createDirectory(current, {}, context);
       }
     }
   }

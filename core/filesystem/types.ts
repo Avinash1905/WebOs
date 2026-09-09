@@ -46,6 +46,10 @@ export interface FileMetadata {
   readonly hidden?: boolean;
   /** Whether the file is read-only */
   readonly readonly?: boolean;
+  /** Owner user ID */
+  readonly ownerId?: string;
+  /** POSIX octal mode (e.g. 0o644, 0o755) */
+  readonly mode?: number;
   /** Optional custom user/application metadata */
   readonly customMetadata?: Readonly<Record<string, unknown>>;
 }
@@ -62,8 +66,24 @@ export interface CreateFileOptions {
   readonly overwrite?: boolean;
   /** Encoding of the content */
   readonly encoding?: FileEncoding;
+  /** Owner user ID */
+  readonly ownerId?: string;
+  /** POSIX octal permission mode */
+  readonly mode?: number;
   /** Optional custom metadata */
   readonly customMetadata?: Record<string, unknown>;
+}
+
+/**
+ * Options when creating a new directory.
+ */
+export interface CreateDirectoryOptions {
+  /** If true, creates intermediate parent directories as needed. Defaults to false. */
+  readonly recursive?: boolean;
+  /** Owner user ID */
+  readonly ownerId?: string;
+  /** POSIX octal permission mode */
+  readonly mode?: number;
 }
 
 /**

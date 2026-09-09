@@ -150,6 +150,24 @@ export interface AppErrorPayload {
 // ==========================================
 // 5. User & Session Payloads
 // ==========================================
+export interface UserCreatedPayload {
+  readonly userId: string;
+  readonly username: string;
+  readonly role?: string;
+  readonly createdAt?: number;
+}
+
+export interface UserUpdatedPayload {
+  readonly userId: string;
+  readonly username?: string;
+  readonly changes?: readonly string[];
+}
+
+export interface UserDeletedPayload {
+  readonly userId: string;
+  readonly username?: string;
+}
+
 export interface UserLoginPayload {
   readonly userId: string;
   readonly username: string;

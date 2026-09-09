@@ -38,8 +38,11 @@ import type {
   StorageReadyPayload,
   SystemErrorPayload,
   SystemLifecyclePayload,
+  UserCreatedPayload,
+  UserDeletedPayload,
   UserLoginPayload,
   UserLogoutPayload,
+  UserUpdatedPayload,
 } from './EventPayloads.js';
 import type { SystemEventType } from './EventTypes.js';
 
@@ -85,6 +88,9 @@ export interface SystemEventMap {
   APP_ERROR: AppErrorPayload;
 
   // User & Session
+  USER_CREATED: UserCreatedPayload;
+  USER_UPDATED: UserUpdatedPayload;
+  USER_DELETED: UserDeletedPayload;
   USER_LOGIN: UserLoginPayload;
   USER_LOGOUT: UserLogoutPayload;
   SESSION_STARTED: SessionStartedPayload;
