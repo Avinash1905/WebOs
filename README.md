@@ -44,3 +44,13 @@ npm run typecheck
 # Build
 npm run build
 ```
+
+## Synthetic Scale Fixtures & Repository Benchmarking
+
+To stress-test repository scalability, build tooling, dependency graph analyzers, and Git automation workflows, this repository incorporates reproducible, modular synthetic fixtures located in `fixtures/synthetic/`.
+
+- **Purpose**: Synthetic test data for benchmarking repository throughput, Git operations, and AST indexers at scale (500,000 LOC across 100 modular batches).
+- **Structure**: Partitioned into 100 deterministic batches (`batch_001` through `batch_100`) across modular subsystems (`core_fixtures`, `io_fixtures`, `net_fixtures`, `ui_fixtures`).
+- **Classification**: These files are synthetic test fixtures and stress-testing benchmarks, distinctly segregated from the core WebOS runtime engine (`core/`).
+- **Reproducibility**: Generated via `generate_bulk_code.py` using deterministic generators with unique semantic tokens and valid TypeScript syntax.
+
